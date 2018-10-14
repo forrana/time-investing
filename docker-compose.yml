@@ -1,0 +1,39 @@
+version: '2'
+services:
+  server:
+    restart: always
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/app
+    depends_on:
+      - redis
+    links:
+      - mongo
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+      - "35729:35729"
+    volumes:
+      - ./client:/app
+    depends_on:
+      - server
+
+  redis:
+    image: redis
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: webapp
+      MONGO_INITDB_ROOT_PASSWORD: pwd123
