@@ -22,6 +22,12 @@ app.config.from_pyfile('config.py')
 
 db = MongoEngine(app)
 
+class User(db.Document):
+    picture = db.StringField()
+    family_name = db.StringField()
+    given_name = db.StringField()
+    email = db.StringField()
+
 class Cache(object):
     def __init__(self):
         self._data = {}
@@ -47,7 +53,11 @@ def index():
 
 
 def handle_authorize(remote, token, user_info):
-    return jsonify(user_info)
+    keys = ['family_name', 'given_name', 'email', 'picture']
+    newUser = {x:user_info[x] for x in keys}
+    User.objects(email=newUser['email'])\
+        .update_one(**newUser, upsert=True)
+    return jsonify(newUser)
 
 for backend in OAUTH_BACKENDS:
     bp = create_flask_blueprint(backend, oauth, handle_authorize)
