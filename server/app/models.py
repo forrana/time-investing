@@ -1,19 +1,29 @@
 from app import app
-import datetime
+from datetime import datetime
 from flask_mongoengine import MongoEngine
+from flask_user import UserMixin, UserManager
 db = MongoEngine(app)
 
-class User(db.Document):
-    picture = db.StringField()
-    family_name = db.StringField()
-    given_name = db.StringField()
+def fill_timestamps(self):
+    if not self.creation_date:
+        self.creation_date = datetime.now()
+    self.modified_date = datetime.now()
+    return self
+
+class User(db.Document, UserMixin):
+    active = db.BooleanField(default=True)
+    username = db.StringField(default='')
+    first_name = db.StringField(default='')
+    last_name = db.StringField(default='')
+    password = db.StringField()
     email = db.StringField()
     password = db.StringField()
     creation_date = db.DateTimeField()
-    modified_date = db.DateTimeField(default=datetime.datetime.now)
+    modified_date = db.DateTimeField()
+    roles = db.ListField(db.StringField(), default=[])
 
-def save(self, *args, **kwargs):
-    if not self.creation_date:
-        self.creation_date = datetime.datetime.now()
-    self.modified_date = datetime.datetime.now()
-    return super(User, self).save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        self = fill_timestamps(self)
+        return super(User, self).save(*args, **kwargs)
+
+user_manager = UserManager(app, db, User)

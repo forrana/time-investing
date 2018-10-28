@@ -1,6 +1,4 @@
 Flask
 Redis
-Authlib
-loginpass
 flask-mongoengine
-flask_restful
+flask_user
