@@ -52,13 +52,13 @@ def member_page():
         """)
 
 # The Members page is only accessible to authenticated users via the @login_required decorator
-@app.route('/user_page')
+@app.route('/expanses')
 @login_required    # User must be authenticated
-def user_page():
+def expanses_page():
     # String-based templates
     return render_template_string("""
         {% extends "flask_user_layout.html" %}
         {% block content %}
-            <h2>User page</h2>
+            {% include "expenses.html" %}
         {% endblock %}
         """)
