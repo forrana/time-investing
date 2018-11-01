@@ -27,3 +27,18 @@ class User(db.Document, UserMixin):
         return super(User, self).save(*args, **kwargs)
 
 user_manager = UserManager(app, db, User)
+
+class Expense(db.Document):
+    amount = db.StringField()
+    date = db.DateTimeField()
+    time = db.StringField()
+    name = db.StringField()
+    price = db.FloatField()
+    place = db.StringField()
+    tags = db.ListField(db.StringField(), default=[])
+    creation_date = db.DateTimeField()
+    modified_date = db.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        self = fill_timestamps(self)
+        return super(Expense, self).save(*args, **kwargs)

@@ -20,7 +20,7 @@ redis = Redis(host='redis', port=6379)
 app.config.from_object(__name__)
 app.config.from_pyfile('config.py')
 from . import models
-from .models import User, user_manager
+from .models import User, user_manager, Expense
 from app.controllers import *
 
 @app.errorhandler(404)
@@ -52,7 +52,7 @@ def member_page():
         """)
 
 # The Members page is only accessible to authenticated users via the @login_required decorator
-@app.route('/expanses')
+@app.route('/expenses')
 @login_required    # User must be authenticated
 def expanses_page():
     # String-based templates
