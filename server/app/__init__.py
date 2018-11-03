@@ -1,8 +1,9 @@
-from flask import Flask, jsonify, make_response, render_template_string
+from flask import Flask, jsonify, make_response, render_template_string, url_for
 from redis import Redis
 from flask_user import login_required
 import os
 import sys
+from datetime import datetime
 
 from . import utils
 from .utils import Cache
@@ -52,9 +53,9 @@ def member_page():
         """)
 
 # The Members page is only accessible to authenticated users via the @login_required decorator
-@app.route('/expenses')
+@app.route('/expense')
 @login_required    # User must be authenticated
-def expanses_page():
+def expense_page():
     # String-based templates
     return render_template_string("""
         {% extends "flask_user_layout.html" %}
@@ -62,3 +63,15 @@ def expanses_page():
             {% include "expenses.html" %}
         {% endblock %}
         """)
+
+@app.route('/expenses')
+@login_required    # User must be authenticated
+def expenses_list_page():
+    expenses = Expense.objects().order_by("-date","name")
+    # String-based templates
+    return render_template_string("""
+        {% extends "flask_user_layout.html" %}
+        {% block content %}
+            {% include "expenses-list.html" %}
+        {% endblock %}
+        """, **{'expenses': expenses, 'current_date': datetime.now().strftime("%Y-%m-%d")})

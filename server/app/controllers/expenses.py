@@ -1,40 +1,46 @@
 ''' controller and routes for expenses '''
 import os
-from flask import request, jsonify
-from app import app, Expense
+from flask import request, jsonify, url_for, redirect
+from app import app, Expense, login_required
+from datetime import datetime
 
-@app.route('/expense', methods=['GET', 'POST', 'DELETE', 'PATCH'])
-def expense():
-    if request.method == 'GET':
-        query = request.args
-        data = Expense.objects(id=request.args['id'])
-        return jsonify(data), 200
-
+@app.route('/api/expense/create', methods=['POST'])
+@login_required
+def expense_create():
     data = request.form
     if request.method == 'POST':
         if data.get('name', None) is not None:
             new_expense = Expense(**data)
             new_expense["tags"] = data["tags"].split(',')
             new_expense.save()
-            return jsonify({'ok': True, 'message': 'Expense created successfully!{}'.format(new_expense.id)}), 200
+            return redirect(url_for('expenses_list_page'))
         else:
             return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
 
-    if request.method == 'DELETE':
-        if data.get('_id', None) is not None:
-            db_response = Expense.objects(_id=data['_id']).delete_one({'_id': data['_id']})
-            if db_response.deleted_count == 1:
-                response = {'ok': True, 'message': 'record deleted'}
-            else:
-                response = {'ok': True, 'message': 'no record found'}
-            return jsonify(response), 200
-        else:
-            return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
+@app.route('/api/expense/all', methods=['GET'])
+@login_required
+def expense_get():
+    if request.method == 'GET':
+        query = request.args
+        data = Expense.objects(query)
+        return jsonify(data), 200
 
+@app.route('/api/expense/delete/<id>', methods=['DELETE', 'POST'])
+@login_required
+def expense_delete(id):
+    if id is not None:
+        db_response = Expense.objects(id=id).delete()
+        return redirect(url_for('expenses_list_page'))
+    else:
+        return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
+
+@app.route('/api/expense/update', methods=['PATCH'])
+@login_required
+def expense_update():
     if request.method == 'PATCH':
         if data.get('query', {}) != {}:
             Expense.objects(data['query']).update_one(
                 data['query'], {'$set': data.get('payload', {})})
-            return jsonify({'ok': True, 'message': 'record updated'}), 200
+            return redirect(url_for('expenses_list_page'))
         else:
             return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400

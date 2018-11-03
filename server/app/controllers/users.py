@@ -1,9 +1,10 @@
 ''' controller and routes for users '''
 import os
 from flask import request, jsonify
-from app import app, User
+from app import app, User, login_required
 
 @app.route('/user', methods=['GET', 'POST', 'DELETE', 'PATCH'])
+@login_required
 def user():
     if request.method == 'GET':
         query = request.args
