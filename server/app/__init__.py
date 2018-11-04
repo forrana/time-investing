@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, make_response, render_template_string, url_for
 from redis import Redis
-from flask_user import login_required
+from flask_user import login_required, current_user
 import os
 import sys
 from datetime import datetime
@@ -67,7 +67,7 @@ def expense_page():
 @app.route('/expenses')
 @login_required    # User must be authenticated
 def expenses_list_page():
-    expenses = Expense.objects().order_by("-date","name")
+    expenses = Expense.objects(owner=current_user.id).order_by("-date","name")
     # String-based templates
     return render_template_string("""
         {% extends "flask_user_layout.html" %}

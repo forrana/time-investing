@@ -1,4 +1,4 @@
-from app import app
+from app import app, current_user
 from datetime import datetime
 from flask_mongoengine import MongoEngine
 from flask_user import UserMixin, UserManager
@@ -38,7 +38,9 @@ class Expense(db.Document):
     tags = db.ListField(db.StringField(), default=[])
     creation_date = db.DateTimeField()
     modified_date = db.DateTimeField()
+    owner = db.ReferenceField(User)
 
     def save(self, *args, **kwargs):
         self = fill_timestamps(self)
+        self.owner = current_user.id
         return super(Expense, self).save(*args, **kwargs)

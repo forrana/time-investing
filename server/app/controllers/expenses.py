@@ -1,7 +1,7 @@
 ''' controller and routes for expenses '''
 import os
 from flask import request, jsonify, url_for, redirect
-from app import app, Expense, login_required
+from app import app, Expense, login_required, current_user
 from datetime import datetime
 
 @app.route('/api/expense/create', methods=['POST'])
@@ -22,7 +22,7 @@ def expense_create():
 def expense_get():
     if request.method == 'GET':
         query = request.args
-        data = Expense.objects(query)
+        data = Expense.objects(owner=current_user.id)
         return jsonify(data), 200
 
 @app.route('/api/expense/delete/<id>', methods=['DELETE', 'POST'])
