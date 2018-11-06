@@ -1,5 +1,5 @@
 {% block content %}
-  <table class="table table-bordered table=striped">
+  <table class="table table-bordered table-striped">
     <thead>
       <tr>
         <th>Date</th>
@@ -22,13 +22,7 @@
           <input type="time" class="form-control" name="time" id="time" aria-describedby="time" placeholder="Enter time">
         </td>
         <td>
-          <input type="text" class="form-control" name="name" id="name" aria-describedby="name" required placeholder="Enter name">
-        </td>
-        <td>
           <input type="text" class="form-control" name="amount" id="amount" aria-describedby="amount" required placeholder="Enter amount">
-        </td>
-        <td>
-          <input type="number" class="form-control" name="price" id="price" aria-describedby="price" required placeholder="Enter price">
         </td>
         <td>
           <input type="text" class="form-control" name="place" id="place" aria-describedby="place" placeholder="Enter place">
@@ -50,16 +44,13 @@
           {{expense.time}}
         </td>
         <td>
-          {{expense.name}}
-        </td>
-        <td>
           {{expense.amount}}
         </td>
         <td>
-          {{expense.price}}
+          {{expense.place}}
         </td>
         <td>
-          {{expense.place}}
+          {{expense.note}}
         </td>
         <td>
           {% for tag in expense.tags %}

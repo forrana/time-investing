@@ -1,0 +1,60 @@
+<h2> Skills</h2>
+<table class="table table-striped">
+  <form class="" action="/api/skill/create" method="post">
+  <tr>
+    <td>
+      <input class="form-control" name="name" title="enter skill name" placeholder="Name"/>
+    </td>
+    <td>
+      <input class="form-control" name="description" title="enter skill description" placeholder="Description"/>
+    </td>
+    <td>
+      <input class="form-control" name="target_day" title="Enter target amount hours per day" placeholder="hours per day"/>
+    </td>
+    <td>
+      <input class="form-control" name="target_week" title="Enter target amount hours per week" placeholder="hours per week"/>
+    </td>
+    <td>
+      <input class="form-control" name="target_month" title="Enter target amount hours per month" placeholder="hours per month"/>
+    </td>
+    <td>
+      <select class="form-control" name="attribute">
+          <option value="">Chose attribute</option>
+        {% for attribute in attributes %}
+          <option value="{{attribute.id}}">{{attribute.name}}</option>
+        {% endfor %}
+      </select>
+    </td>
+    <td>
+      <input class="btn btn-default" type="submit"/>
+    </td>
+  </tr>
+  </form>
+  {% for skill in skills %}
+  <tr>
+    <td>
+      {{skill.name}}
+    </td>
+    <td>
+      {{skill.description}}
+    </td>
+    <td>
+      {{skill.target_day}}
+    </td>
+    <td>
+      {{skill.target_week}}
+    </td>
+    <td>
+      {{skill.target_month}}
+    </td>
+    <td>
+      {{skill.attribute.name}}
+    </td>
+    <td>
+      <form action="{{ url_for('skill_delete', id=skill.id) }}" method=post>
+        <button type="submit" class="btn btn-danger">Delete</buton>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>

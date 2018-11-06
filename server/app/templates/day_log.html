@@ -1,0 +1,17 @@
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='day_log.css') }}">
+<section class="day_log-container">
+{% for hour in range(24) %}
+  <div class="day_log-hour-cell">
+    {{hour}}
+    <div class="day_log-quarter_hour-container">
+      {% for qurter_hour in range(4) %}
+      <div class="day_log-quarter_hour-cell">
+        {{qurter_hour*15}}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endfor %}
+</section>
+{% endblock %}

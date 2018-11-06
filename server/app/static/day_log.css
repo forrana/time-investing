@@ -1,0 +1,13 @@
+.day_log-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.day_log-hour-cell {
+  border: 1px solid red;
+  display: flex;
+}
+
+.day_log-quarter_hour-cell {
+  border: 1px solid blue;
+}

@@ -21,7 +21,7 @@ redis = Redis(host='redis', port=6379)
 app.config.from_object(__name__)
 app.config.from_pyfile('config.py')
 from . import models
-from .models import User, user_manager, Expense
+from .models import User, user_manager, Expense, Attribute, Skill
 from app.controllers import *
 
 @app.errorhandler(404)
@@ -29,44 +29,31 @@ def not_found(error):
     """ error handler """
     return make_response(jsonify({'error': 'Not found'}), 404)
 
-# The Home page is accessible to anyone
 @app.route('/')
+@login_required    # User must be authenticated
 def home_page():
-    # String-based templates
     return render_template_string("""
         {% extends "flask_user_layout.html" %}
         {% block content %}
-            <h2>Home page</h2>
+            {% include "day_log.html" %}
         {% endblock %}
         """)
 
-# The Members page is only accessible to authenticated users via the @login_required decorator
-@app.route('/members')
-@login_required    # User must be authenticated
-def member_page():
-    # String-based templates
+@app.route('/settings')
+@login_required
+def settings():
+    attributes = Attribute.objects(owner=current_user.id).order_by("name")
+    skills = Skill.objects(owner=current_user.id).order_by("name")
     return render_template_string("""
         {% extends "flask_user_layout.html" %}
         {% block content %}
-            <h2>Members page</h2>
+            {% include "settings.html" %}
         {% endblock %}
-        """)
-
-# The Members page is only accessible to authenticated users via the @login_required decorator
-@app.route('/expense')
-@login_required    # User must be authenticated
-def expense_page():
-    # String-based templates
-    return render_template_string("""
-        {% extends "flask_user_layout.html" %}
-        {% block content %}
-            {% include "expenses.html" %}
-        {% endblock %}
-        """)
+        """, **{'attributes': attributes, 'skills': skills})
 
 @app.route('/expenses')
 @login_required    # User must be authenticated
-def expenses_list_page():
+def expenses_page():
     expenses = Expense.objects(owner=current_user.id).order_by("-date","name")
     # String-based templates
     return render_template_string("""
