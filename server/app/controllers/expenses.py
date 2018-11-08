@@ -9,9 +9,8 @@ from datetime import datetime
 def expense_create():
     data = request.form
     if request.method == 'POST':
-        if data.get('name', None) is not None:
+        if data.get('amount', None) is not None:
             new_expense = Expense(**data)
-            new_expense["tags"] = data["tags"].split(',')
             new_expense.save()
             return redirect(url_for('expenses_list_page'))
         else:

@@ -53,13 +53,16 @@ class Skill(TimeStampsOwnerModel):
     target_week = db.FloatField(default=0)
     target_month = db.FloatField(default=0)
     target_year = db.FloatField(default=0)
-    attribute = db.ReferenceField(Attribute)
+    attributes = db.ListField(db.ReferenceField(Attribute))
+
+    def stringify_attributes(self):
+        if self.attributes:
+            return ", ".join(map(lambda skill: skill["name"], self.attributes))
+        return ""
 
 class Expense(TimeStampsOwnerModel):
     amount = db.StringField()
     date = db.DateTimeField()
     time = db.StringField()
     place = db.StringField()
-    note = db.StringField()
-    tags = db.ListField(db.StringField(), default=[])
     skill = db.ReferenceField(Skill)

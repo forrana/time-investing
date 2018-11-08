@@ -29,16 +29,6 @@ def not_found(error):
     """ error handler """
     return make_response(jsonify({'error': 'Not found'}), 404)
 
-@app.route('/')
-@login_required    # User must be authenticated
-def home_page():
-    return render_template_string("""
-        {% extends "flask_user_layout.html" %}
-        {% block content %}
-            {% include "day_log.html" %}
-        {% endblock %}
-        """)
-
 @app.route('/settings')
 @login_required
 def settings():
@@ -51,14 +41,19 @@ def settings():
         {% endblock %}
         """, **{'attributes': attributes, 'skills': skills})
 
-@app.route('/expenses')
+@app.route('/')
 @login_required    # User must be authenticated
-def expenses_page():
+def expenses_list_page():
     expenses = Expense.objects(owner=current_user.id).order_by("-date","name")
+    skills = Skill.objects(owner=current_user.id).order_by("name")
     # String-based templates
     return render_template_string("""
         {% extends "flask_user_layout.html" %}
         {% block content %}
             {% include "expenses-list.html" %}
         {% endblock %}
-        """, **{'expenses': expenses, 'current_date': datetime.now().strftime("%Y-%m-%d")})
+        """, **{
+            'expenses': expenses,
+            'current_date': datetime.now().strftime("%Y-%m-%d"),
+            'skills': skills
+            })

@@ -7,9 +7,10 @@ from datetime import datetime
 @app.route('/api/skill/create', methods=['POST'])
 @login_required
 def skill_create():
-    data = request.form
+    data = request.form.copy()
     if request.method == 'POST':
         if data.get('name', None) is not None:
+            data['attributes'] = data.getlist('attributes')
             new_skill = Skill(**data)
             new_skill.save()
             return redirect(url_for('settings'))
