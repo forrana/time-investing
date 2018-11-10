@@ -1,17 +1,4 @@
 {% block content %}
-  <h1 style="text-align: center;">You still have <mark id="expenses-list-time-left"></mark><mark>minutes</mark> today to invest</h1>
-  <div style="display: flex">
-    <div class="input-group mb-3">
-      <select class="form-control" name="skill">
-          <option> Chose an activity and press start to invest! </option>
-        {% for skill in skills %}
-          <option value="{{skill.id}}">{{skill.name}}</option>
-        {% endfor %}
-      </select>
-      <input type="submit" class="btn btn-default input-group-append" value="Start!!!"/>
-    </div>
-  </div>
-
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
@@ -77,9 +64,4 @@
       {% endfor %}
     </tbody>
   </table>
-  {% block javascript %}
-    <script type="text/javascript">
-        {% include "js/expanses-list.js" %}
-    </script>
-  {% endblock %}
 {% endblock %}

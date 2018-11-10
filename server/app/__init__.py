@@ -29,6 +29,17 @@ def not_found(error):
     """ error handler """
     return make_response(jsonify({'error': 'Not found'}), 404)
 
+@app.route('/')
+@login_required
+def home():
+    skills = Skill.objects(owner=current_user.id).order_by("name")
+    return render_template_string("""
+        {% extends "flask_user_layout.html" %}
+        {% block content %}
+            {% include "home.html" %}
+        {% endblock %}
+        """, **{'skills': skills})
+
 @app.route('/settings')
 @login_required
 def settings():
@@ -41,9 +52,9 @@ def settings():
         {% endblock %}
         """, **{'attributes': attributes, 'skills': skills})
 
-@app.route('/')
+@app.route('/time_log')
 @login_required    # User must be authenticated
-def expenses_list_page():
+def time_log():
     expenses = Expense.objects(owner=current_user.id).order_by("-date","name")
     skills = Skill.objects(owner=current_user.id).order_by("name")
     # String-based templates
