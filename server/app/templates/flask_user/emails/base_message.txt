@@ -4,4 +4,4 @@ Dear User,
 {% endblock %}
 
 Sincerely,
-{{ app_name }}
+[[ app_name ]]

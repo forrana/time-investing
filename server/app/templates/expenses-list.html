@@ -14,7 +14,7 @@
       <form class="" action="/api/expense/create" method="post">
       <tr>
         <td>
-          <input type="date" class="form-control" name="date" id="date" value="{{current_date}}" required aria-describedby="date" placeholder="Enter date">
+          <input type="date" class="form-control" name="date" id="date" value="[[current_date]]" required aria-describedby="date" placeholder="Enter date">
         </td>
         <td>
           <input type="time" class="form-control" name="time" id="time" aria-describedby="time" placeholder="Enter time">
@@ -29,7 +29,7 @@
           <select class="form-control" name="skill">
               <option> Select activity</option>
             {% for skill in skills %}
-              <option value="{{skill.id}}">{{skill.name}}</option>
+              <option value="[[skill.id]]">[[skill.name]]</option>
             {% endfor %}
           </select>
         </td>
@@ -41,22 +41,22 @@
       {% for expense in expenses %}
       <tr>
         <td>
-          {{expense.date.strftime("%m/%d/%y")}}
+          [[expense.date.strftime("%m/%d/%y")]]
         </td>
         <td>
-          {{expense.time}}
+          [[expense.time]]
         </td>
         <td>
-          {{expense.amount}}
+          [[expense.amount]]
         </td>
         <td>
-          {{expense.place}}
+          [[expense.place]]
         </td>
         <td>
-          {{expense.skill.name}}
+          [[expense.skill.name]]
         </td>
         <td>
-          <form action="{{ url_for('expense_delete', id=expense.id) }}" method=post>
+          <form action="[[ url_for('expense_delete', id=expense.id) ]]" method=post>
             <button type="submit" class="btn btn-danger">Delete</buton>
           </form>
         </td>

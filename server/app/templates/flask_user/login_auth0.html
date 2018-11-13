@@ -23,7 +23,7 @@
 {% block content %}
 <div id="centered-block">
     <a class="btn btn-primary"
-        href="{{ url_for('user.login') }}">Sign in</a>
+        href="[[ url_for('user.login') ]]">Sign in</a>
 </div>
 {% endblock %}
 
@@ -37,7 +37,7 @@ $(document).ready(function() {
 
     {# Create the Auth0 Lock login widget #}
     {# AUTH0_CLIENT_ID and AUTH0_DOMAIN are defined by the Auth0 website #}
-    var auth0_lock = new Auth0Lock('{{ config.get('AUTH0_CLIENT_ID') }}', '{{ config.get('AUTH0_DOMAIN') }}', {
+    var auth0_lock = new Auth0Lock('[[ config.get('AUTH0_CLIENT_ID') ]]', '[[ config.get('AUTH0_DOMAIN') ]]', {
         auth: {
             {# auth0_callback_url is something like "https://app.registersimply.com/callback" #}
             {# and must be defined in the Auth0 website for it to work #}
@@ -47,7 +47,7 @@ $(document).ready(function() {
 
             params: {
                 scope: 'openid email',   // Return user ID and email in the user_info
-                state: '{{ next_url }}',
+                state: '[[ next_url ]]',
             }
         },
       initialScreen: 'login'	,

@@ -13,10 +13,10 @@
   {% for attribute in attributes %}
   <tr>
     <td>
-      {{attribute.name}}
+      [[attribute.name]]
     </td>
     <td>
-      <form action="{{ url_for('attribute_delete', id=attribute.id) }}" method=post>
+      <form action="[[ url_for('attribute_delete', id=attribute.id) ]]" method=post>
         <button type="submit" class="btn btn-danger">Delete</buton>
       </form>
     </td>

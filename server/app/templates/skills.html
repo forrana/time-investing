@@ -14,7 +14,7 @@
     <td>
       <select class="form-control" name="attributes" multiple>
         {% for attribute in attributes %}
-          <option value="{{attribute.id}}">{{attribute.name}}</option>
+          <option value="[[attribute.id]]">[[attribute.name]]</option>
         {% endfor %}
       </select>
     </td>
@@ -26,19 +26,19 @@
   {% for skill in skills %}
   <tr>
     <td>
-      {{skill.name}}
+      [[skill.name]]
     </td>
     <td>
-      {{skill.description}}
+      [[skill.description]]
     </td>
     <td>
-      {{skill.target_week}}
+      [[skill.target_week]]
     </td>
     <td>
-      {{skill.stringify_attributes()}}
+      [[skill.stringify_attributes()]]
     </td>
     <td>
-      <form action="{{ url_for('skill_delete', id=skill.id) }}" method=post>
+      <form action="[[ url_for('skill_delete', id=skill.id) ]]" method=post>
         <button type="submit" class="btn btn-danger">Delete</buton>
       </form>
     </td>

@@ -14,7 +14,14 @@ os.environ.update({'ROOT_PATH': ROOT_PATH})
 sys.path.append(os.path.join(ROOT_PATH, 'modules'))
 
 # Define the WSGI application object
-app = Flask(__name__)
+class CustomFlask(Flask):
+    jinja_options = Flask.jinja_options.copy()
+    jinja_options.update(dict(
+        variable_start_string='[[',
+        variable_end_string=']]',
+    ))
+
+app = CustomFlask(__name__)
 redis = Redis(host='redis', port=6379)
 
 # Configurations
