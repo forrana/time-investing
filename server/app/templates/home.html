@@ -11,7 +11,7 @@
       </select>
       <select class="form-control" v-model="selectedAmountOfTime" :disabled="isActivityStarted">
         {% for n in range(4) %}
-          <option value="[[15*n + 1]]">[[15*(n+1)]] minutes</option>
+          <option value="[[15*(n + 1)]]">[[15*(n+1)]] minutes</option>
         {% endfor %}
       </select>
       <button
@@ -28,7 +28,14 @@
     </div>
   </div>
   <div class="progress">
-    <div class="progress-bar progress-bar-striped progress-bar-animated" id="time-progressbar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    <div
+      class="progress-bar progress-bar-striped progress-bar-animated"
+      role="progressbar"
+      v-bind:style="{width: timerProgressInPercents + '%'}"
+      v-bind:aria-valuenow="timerProgressInPercents"
+      aria-valuemin="0"
+      aria-valuemax="100">
+    </div>
     <span class="justify-content-center d-flex position-absolute w-100">{{timeProgressBarText}}</span>
   </div>
   </main>

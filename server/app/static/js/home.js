@@ -4,46 +4,40 @@ const home = new Vue({
     selectedSkill: '',
     selectedAmountOfTime: 15,
     isActivityStarted: false,
-    timeProgressBarText: "",
     timerProgress: 0,
+    timePassedSec: 0,
     activityTimer: null,
   },
   methods: {
     onActivityStart,
     onActivityStop,
+  },
+  computed: {
+    timeProgressBarText: function () {
+      if(!this.isActivityStarted) return "";
+      return `${this.timerProgress}/${this.selectedAmountOfTime * 60} seconds`;
+    },
+    timerProgressInPercents: function () {
+      if(!this.isActivityStarted) return 0;
+      const percentsOfTimePerSecond = 100/(+this.selectedAmountOfTime * 60);
+      return this.timerProgress*percentsOfTimePerSecond;
+    }
   }
 })
 
 function clearProgress() {
-  const timeProgressBar = document.querySelector("#time-progressbar");
-  timeProgressBar.setAttribute("aria-valuenow", '0');
-  timeProgressBar.style.width = '0';
-
   this.isActivityStarted = false;
   this.timerProgress = 0;
-  this.timeProgressBarText = ''
   clearInterval(this.activityTimer);
 }
 
 function onActivityStart() {
   this.isActivityStarted = true;
-  const timeProgressBar = document.querySelector("#time-progressbar");
-  const amountOfTime = this.selectedAmountOfTime * 60;
-  // const timeProgressBarText = document.querySelector("#time-progressbar-text");
-  const percentsOfTimePerSecond = 100/(+amountOfTime);
-  // TODO move timeprogressBar to component
-  this.timeProgressBarText = `${this.timerProgress}/${amountOfTime} seconds`
-  // timeProgressBarText.innerHTML = `${timerProgress}/${amountOfTime} seconds`;
-
   this.activityTimer = setInterval(() => {
     this.timerProgress++;
-    if(this.timerProgress >= amountOfTime) {
+    if(this.timerProgress >= this.selectedAmountOfTime * 60) {
       clearProgress.apply(this);
     }
-    let timerProgressInPercents = this.timerProgress*percentsOfTimePerSecond;
-    timeProgressBar.setAttribute("aria-valuenow", timerProgressInPercents);
-    timeProgressBar.style.width = `${timerProgressInPercents}%`;
-    this.timeProgressBarText = `${this.timerProgress}/${amountOfTime} seconds`;
   }, 1000)
 }
 
