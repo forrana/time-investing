@@ -1,12 +1,15 @@
 const home = new Vue({
   el: '#home',
   data: {
-    selectedSkill: '',
     selectedAmountOfTime: 15,
     isActivityStarted: false,
     timerProgress: 0,
     timePassedSec: 0,
     activityTimer: null,
+    expense: {
+      skill: '',
+      amount: 15
+    }
   },
   methods: {
     onActivityStart,
@@ -15,11 +18,11 @@ const home = new Vue({
   computed: {
     timeProgressBarText: function () {
       if(!this.isActivityStarted) return "";
-      return `${this.timerProgress}/${this.selectedAmountOfTime * 60} seconds`;
+      return `${this.timerProgress}/${this.expense.amount * 60} seconds`;
     },
     timerProgressInPercents: function () {
       if(!this.isActivityStarted) return 0;
-      const percentsOfTimePerSecond = 100/(+this.selectedAmountOfTime * 60);
+      const percentsOfTimePerSecond = 100/(+this.expense.amount * 60);
       return this.timerProgress*percentsOfTimePerSecond;
     }
   }
@@ -32,10 +35,11 @@ function clearProgress() {
 }
 
 function onActivityStart() {
+  startActivity(this.expense);
   this.isActivityStarted = true;
   this.activityTimer = setInterval(() => {
     this.timerProgress++;
-    if(this.timerProgress >= this.selectedAmountOfTime * 60) {
+    if(this.timerProgress >= this.expense.amount * 60) {
       clearProgress.apply(this);
     }
   }, 1000)
@@ -47,6 +51,23 @@ function onActivityStop() {
   }
 }
 
+function startActivity(expense) {
+  fetch("/api/expense/create", {
+    method: 'POST',
+    body: JSON.stringify( {
+      ...expense,
+      started_at: new Date().toISOString().substr(0,19)
+    } ), // data can be `string` or {object}!
+    headers:{
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(res => res.json())
+  .then(response => console.log('Success:', JSON.stringify(response)))
+  .catch(error => console.error('Error:', error))
+}
+
+// Day time countdown
 (function() {
   const timeLeftElement = document.querySelector("#expenses-list-time-left")
   const currentUnixTime = new Date().getTime() / 1000;

@@ -7,12 +7,13 @@ from datetime import datetime
 @app.route('/api/expense/create', methods=['POST'])
 @login_required
 def expense_create():
-    data = request.form
+    data = request.get_json()
     if request.method == 'POST':
-        if data.get('amount', None) is not None:
+        if data.get('skill', None) is not None:
             new_expense = Expense(**data)
+            new_expense.started_at = datetime.strptime(data.get('started_at'), '%Y-%m-%dT%H:%M:%S')
             new_expense.save()
-            return redirect(url_for('expenses_list_page'))
+            return jsonify({ 'ok': True, 'expense': new_expense }), 200
         else:
             return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
 
@@ -29,7 +30,7 @@ def expense_get():
 def expense_delete(id):
     if id is not None:
         db_response = Expense.objects(id=id).delete()
-        return redirect(url_for('expenses_list_page'))
+        return jsonify({'ok': True, 'message': db_response}), 200
     else:
         return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
 

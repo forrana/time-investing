@@ -61,8 +61,10 @@ class Skill(TimeStampsOwnerModel):
         return ""
 
 class Expense(TimeStampsOwnerModel):
-    amount = db.StringField()
+    amount = db.DecimalField()
     date = db.DateTimeField()
     time = db.StringField()
     place = db.StringField()
     skill = db.ReferenceField(Skill)
+    started_at = db.DateTimeField()
+    finished_at = db.DateTimeField()

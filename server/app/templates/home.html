@@ -3,13 +3,13 @@
   <h1 style="text-align: center;">You still have <mark id="expenses-list-time-left"></mark><mark>minutes</mark> today to invest</h1>
   <div style="display: flex">
     <div class="input-group mb-3">
-      <select class="form-control" name="skill" v-model="selectedSkill" :disabled="isActivityStarted">
+      <select class="form-control" name="skill" v-model="expense.skill" :disabled="isActivityStarted">
           <option value=""> Chose an activity and press start to invest! </option>
         {% for skill in skills %}
           <option value="[[skill.id]]">[[skill.name]]</option>
         {% endfor %}
       </select>
-      <select class="form-control" v-model="selectedAmountOfTime" :disabled="isActivityStarted">
+      <select class="form-control" v-model="expense.amount" :disabled="isActivityStarted">
         {% for n in range(4) %}
           <option value="[[15*(n + 1)]]">[[15*(n+1)]] minutes</option>
         {% endfor %}
@@ -17,7 +17,7 @@
       <button
         class="btn btn-default input-group-append"
         v-on:click="onActivityStart"
-        :disabled="!selectedSkill || !selectedAmountOfTime"
+        :disabled="!expense.skill || !selectedAmountOfTime"
         v-if="!isActivityStarted"
         >Start!</button>
       <button
