@@ -62,7 +62,7 @@ def settings():
 @app.route('/time_log')
 @login_required    # User must be authenticated
 def time_log():
-    expenses = Expense.objects(owner=current_user.id).order_by("-date","name")
+    expenses = Expense.objects(owner=current_user.id, finished_at__ne='').order_by("-date","name")
     skills = Skill.objects(owner=current_user.id).order_by("name")
     # String-based templates
     return render_template_string("""
