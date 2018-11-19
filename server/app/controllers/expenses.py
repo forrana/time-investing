@@ -30,17 +30,21 @@ def expense_get():
 def expense_delete(id):
     if id is not None:
         db_response = Expense.objects(id=id).delete()
-        return jsonify({'ok': True, 'message': db_response}), 200
+        return redirect(url_for('time_log'))
     else:
         return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
 
-@app.route('/api/expense/update', methods=['PATCH'])
+@app.route('/api/expense/update/<id>', methods=['POST'])
 @login_required
-def expense_update():
-    if request.method == 'PATCH':
-        if data.get('query', {}) != {}:
-            Expense.objects(data['query']).update_one(
-                data['query'], {'$set': data.get('payload', {})})
-            return redirect(url_for('expenses_list_page'))
+def expense_update(id):
+    data = request.get_json()
+    if request.method == 'POST':
+        if id is not None and data is not None:
+            finished_at = datetime.strptime(data.get("finished_at"), '%Y-%m-%dT%H:%M:%S')
+            if finished_at is not None:
+                db_response = Expense.objects(id=id).update(finished_at = finished_at)
+                return jsonify({'ok': True, 'message': db_response}), 200
+            else:
+                return jsonify({'ok': False, 'message': 'Parsin params error!'}), 400
         else:
             return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400

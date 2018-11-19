@@ -3,16 +3,16 @@
   <form class="" action="/api/skill/create" method="post">
   <tr>
     <td>
-      <input class="form-control" name="name" title="enter skill name" placeholder="Name"/>
+      <input class="form-control" required name="name" title="enter skill name" placeholder="Name"/>
     </td>
     <td>
       <input class="form-control" name="description" title="enter skill description" placeholder="Description"/>
     </td>
     <td>
-      <input type="number" class="form-control" name="target_week" title="Enter target amount hours per week" placeholder="hours per week"/>
+      <input type="number" required class="form-control" name="target_week" title="Enter target amount hours per week" placeholder="hours per week"/>
     </td>
     <td>
-      <select class="form-control" name="attributes" multiple>
+      <select class="form-control" required name="attributes" multiple>
         {% for attribute in attributes %}
           <option value="[[attribute.id]]">[[attribute.name]]</option>
         {% endfor %}

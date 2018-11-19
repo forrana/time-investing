@@ -4,6 +4,7 @@
       <tr>
         <th>Date</th>
         <th>Start time</th>
+        <th>End time</th>
         <th class="text-danger">Amount of minutes*</th>
         <th>Place</th>
         <th class="text-danger">Activity*</th>
@@ -14,16 +15,19 @@
       <form class="" action="/api/expense/create" method="post">
       <tr>
         <td>
-          <input type="date" class="form-control" name="date" id="date" value="[[current_date]]" required aria-describedby="date" placeholder="Enter date">
+          <input type="date" class="form-control" name="date" value="[[current_date]]" required aria-describedby="date" placeholder="Enter date">
         </td>
         <td>
-          <input type="time" class="form-control" name="time" id="time" aria-describedby="time" placeholder="Enter time">
+          <input type="time" class="form-control" name="started_at" aria-describedby="time started" placeholder="Enter start time">
         </td>
         <td>
-          <input type="text" class="form-control" name="amount" id="amount" aria-describedby="amount" required placeholder="Enter amount">
+          <input type="time" class="form-control" name="finished_at" aria-describedby="time finished" placeholder="Enter finish time">
         </td>
         <td>
-          <input type="text" class="form-control" name="place" id="place" aria-describedby="place" placeholder="Enter place">
+          <input type="text" class="form-control" name="amount" aria-describedby="amount" required placeholder="Enter amount">
+        </td>
+        <td>
+          <input type="text" class="form-control" name="place" aria-describedby="place" placeholder="Enter place">
         </td>
         <td>
           <select class="form-control" name="skill">
@@ -44,7 +48,10 @@
           [[expense.date.strftime("%m/%d/%y")]]
         </td>
         <td>
-          [[expense.time]]
+          [[expense.started_at.strftime("%H:%M:%S")]]
+        </td>
+        <td>
+          [[expense.finished_at and expense.finished_at.strftime("%H:%M:%S")]]
         </td>
         <td>
           [[expense.amount]]

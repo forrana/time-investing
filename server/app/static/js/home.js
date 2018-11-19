@@ -1,3 +1,6 @@
+import { startActivity, finishActivity } from "./api.js?version=2"
+const TIMER_STEP = 30
+
 const home = new Vue({
   el: '#home',
   data: {
@@ -38,8 +41,9 @@ function onActivityStart() {
   startActivity(this.expense);
   this.isActivityStarted = true;
   this.activityTimer = setInterval(() => {
-    this.timerProgress++;
+    this.timerProgress += TIMER_STEP;
     if(this.timerProgress >= this.expense.amount * 60) {
+      finishActivity(this.expense);
       clearProgress.apply(this);
     }
   }, 1000)
@@ -49,22 +53,6 @@ function onActivityStop() {
   if(window.confirm("If you stop activity progress will be lost. (Sorry, there isn't pause - you can't pause the time.)")) {
     clearProgress.apply(this);
   }
-}
-
-function startActivity(expense) {
-  fetch("/api/expense/create", {
-    method: 'POST',
-    body: JSON.stringify( {
-      ...expense,
-      started_at: new Date().toISOString().substr(0,19)
-    } ), // data can be `string` or {object}!
-    headers:{
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(res => res.json())
-  .then(response => console.log('Success:', JSON.stringify(response)))
-  .catch(error => console.error('Error:', error))
 }
 
 // Day time countdown
