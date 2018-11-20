@@ -1,7 +1,9 @@
 import { startActivity, finishActivity } from "./api.js?version=2"
+import { showNotification } from "./notifications.js?version=1"
 const TIMER_STEP = 30
 
-const home = new Vue({
+if(document.querySelector("#home")) {
+new Vue({
   el: '#home',
   data: {
     selectedAmountOfTime: 15,
@@ -44,6 +46,7 @@ function onActivityStart() {
     this.timerProgress += TIMER_STEP;
     if(this.timerProgress >= this.expense.amount * 60) {
       finishActivity(this.expense);
+      showNotification("Good job!", `${this.expense.amount} minutes sucessfully invested`);
       clearProgress.apply(this);
     }
   }, 1000)
@@ -54,7 +57,6 @@ function onActivityStop() {
     clearProgress.apply(this);
   }
 }
-
 // Day time countdown
 (function() {
   const timeLeftElement = document.querySelector("#expenses-list-time-left")
@@ -72,3 +74,4 @@ function onActivityStop() {
     timeLeftElement.innerHTML = minutesLeftInTheCurrentDay
   }, 1000*60);
 })()
+}
