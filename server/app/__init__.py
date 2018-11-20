@@ -3,7 +3,7 @@ from redis import Redis
 from flask_user import login_required, current_user
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from . import utils
 from .utils import Cache
@@ -39,13 +39,20 @@ def not_found(error):
 @app.route('/')
 @login_required
 def home():
+    today = datetime.utcnow().date()
+    tomorrow = datetime.utcnow().date() + timedelta(days=1)
     skills = Skill.objects(owner=current_user.id).order_by("name")
+    expenses = Expense.objects(owner=current_user.id, finished_at__ne='', date__gte=today, date__lt=tomorrow ).aggregate(
+          {
+            "$group": { "_id": "$skill", "total": { "$sum": "$amount" } }
+          }
+        )
     return render_template_string("""
         {% extends "flask_user_layout.html" %}
         {% block content %}
             {% include "home.html" %}
         {% endblock %}
-        """, **{'skills': skills})
+        """, **{'skills': skills, 'expenses': expenses})
 
 @app.route('/settings')
 @login_required
@@ -62,7 +69,7 @@ def settings():
 @app.route('/time_log')
 @login_required    # User must be authenticated
 def time_log():
-    expenses = Expense.objects(owner=current_user.id, finished_at__ne='').order_by("-date","name")
+    expenses = Expense.objects(owner=current_user.id, finished_at__ne='')
     skills = Skill.objects(owner=current_user.id).order_by("name")
     # String-based templates
     return render_template_string("""

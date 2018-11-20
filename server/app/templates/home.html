@@ -43,4 +43,20 @@
     <span class="justify-content-center d-flex position-absolute w-100">{{timeProgressBarText}}</span>
   </div>
   </main>
+  <section>
+    Totally invested today:
+    {% for expense in expenses %}
+    <div class="progress">
+      <div
+        class="progress-bar progress-bar-striped progress-bar-animated"
+        role="progressbar"
+        style="width: [[expense.total]]%"
+        aria-valuenow="[[expense.total]]"
+        aria-valuemin="0"
+        aria-valuemax="100">
+      </div>
+      <span class="justify-content-center d-flex position-absolute w-100">[[expense._id]]: [[expense.total]] minutes</span>
+    </div>
+    {% endfor %}
+  </section>
 {% endblock %}
