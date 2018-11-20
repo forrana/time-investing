@@ -1,4 +1,7 @@
 {% block content %}
+<script>
+  const activeSkills = [[skills|tojson|safe]];
+</script>
   <main id="home">
   <h1 style="text-align: center;">You still have <mark id="expenses-list-time-left"></mark><mark>minutes</mark> today to invest</h1>
   <div style="display: flex">

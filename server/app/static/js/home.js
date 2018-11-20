@@ -46,7 +46,11 @@ function onActivityStart() {
     this.timerProgress += TIMER_STEP;
     if(this.timerProgress >= this.expense.amount * 60) {
       finishActivity(this.expense);
-      showNotification("Good job!", `${this.expense.amount} minutes sucessfully invested`);
+      const selectedActivityName = activeSkills.find(
+        ({_id}) => _id.$oid == this.expense.skill
+      ).name
+      showNotification("Good job!",
+        `${this.expense.amount} minutes sucessfully invested into ${selectedActivityName}`);
       clearProgress.apply(this);
     }
   }, 1000)
