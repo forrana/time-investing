@@ -61,6 +61,7 @@ class Skill(TimeStampsOwnerModel):
         return ""
 
 class Expense(TimeStampsOwnerModel):
+    skill_name = db.StringField()
     amount = db.DecimalField()
     date = db.DateTimeField(default=datetime.now())
     time = db.StringField()
@@ -68,3 +69,8 @@ class Expense(TimeStampsOwnerModel):
     skill = db.ReferenceField(Skill)
     started_at = db.DateTimeField()
     finished_at = db.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if(self.skill):
+            self.skill_name = self.skill.name
+        return super(Expense, self).save(*args, **kwargs)

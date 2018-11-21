@@ -44,7 +44,7 @@ def home():
     skills = Skill.objects(owner=current_user.id).order_by("name")
     expenses = Expense.objects(owner=current_user.id, finished_at__ne='', date__gte=today, date__lt=tomorrow ).aggregate(
           {
-            "$group": { "_id": "$skill", "total": { "$sum": "$amount" } }
+            "$group": { "_id": "$skill", "total": { "$sum": "$amount" }, "name": { "$first": "$skill_name"}}
           }
         )
     return render_template_string("""

@@ -39,6 +39,12 @@ function clearProgress() {
   clearInterval(this.activityTimer);
 }
 
+function getSkillNameById(skillId) {
+  return activeSkills.find(
+    ({_id}) => _id.$oid == this.expense.skill
+  ).name || ""
+}
+
 function onActivityStart() {
   startActivity(this.expense);
   this.isActivityStarted = true;
@@ -46,9 +52,7 @@ function onActivityStart() {
     this.timerProgress += TIMER_STEP;
     if(this.timerProgress >= this.expense.amount * 60) {
       finishActivity(this.expense);
-      const selectedActivityName = activeSkills.find(
-        ({_id}) => _id.$oid == this.expense.skill
-      ).name
+      const selectedActivityName = getSkillNameById(this.expense.skill);
       showNotification("Good job!",
         `${this.expense.amount} minutes sucessfully invested into ${selectedActivityName}`);
       clearProgress.apply(this);
