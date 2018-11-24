@@ -1,8 +1,28 @@
-import { startActivity, finishActivity } from "./api.js?version=2"
+import { startActivity, finishActivity } from "./api.js?version=3"
 import { showNotification } from "./notifications.js?version=1"
 const TIMER_STEP = 30
 
+
 if(document.querySelector("#home")) {
+  function getSkillNameById(skillId) {
+    return activeSkills.find(
+      ({_id}) => _id.$oid == skillId
+    ).name || ""
+  }
+
+  function getSkillTargetHoursById(skillId) {
+    return activeSkills.find(
+      ({_id}) => _id.$oid == skillId
+    ).target_week || 0
+  }
+
+  const groupedBySkillExpansesJson = JSON.parse(groupedBySkillExpanses);
+  const groupedExpansesWSkillName = groupedBySkillExpansesJson.map((group) => {
+    group.name = getSkillNameById(group._id);
+    group.target = getSkillTargetHoursById(group._id) * 60;
+    group.achievedTarget = group.total * 100 / group.target;
+    return group;
+  })
 new Vue({
   el: '#home',
   data: {
@@ -14,11 +34,15 @@ new Vue({
     expense: {
       skill: '',
       amount: 15
-    }
+    },
+    expenseGroups: groupedExpansesWSkillName
   },
   methods: {
     onActivityStart,
     onActivityStop,
+    groupAchievedInPercents: function(group) {
+      return group.total * 100 / group.target;
+    },
   },
   computed: {
     timeProgressBarText: function () {
@@ -29,7 +53,7 @@ new Vue({
       if(!this.isActivityStarted) return 0;
       const percentsOfTimePerSecond = 100/(+this.expense.amount * 60);
       return this.timerProgress*percentsOfTimePerSecond;
-    }
+    },
   }
 })
 
@@ -37,12 +61,6 @@ function clearProgress() {
   this.isActivityStarted = false;
   this.timerProgress = 0;
   clearInterval(this.activityTimer);
-}
-
-function getSkillNameById(skillId) {
-  return activeSkills.find(
-    ({_id}) => _id.$oid == skillId
-  ).name || ""
 }
 
 function onActivityStart() {
@@ -56,6 +74,14 @@ function onActivityStart() {
       clearProgress.apply(this);
       showNotification("Good job!",
         `${this.expense.amount} minutes sucessfully invested into ${selectedActivityName}`);
+      this.expenseGroups = this.expenseGroups.map(
+        (group) => {
+          if(group.name === selectedActivityName) {
+            group.total = +group.total + +this.expense.amount;
+          }
+          return group;
+        }
+      );
     }
   }, 1000)
 }

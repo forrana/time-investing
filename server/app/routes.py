@@ -1,5 +1,13 @@
 from datetime import datetime, timedelta
+import json
+from bson import ObjectId
 from app import *
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
 
 @app.errorhandler(404)
 def not_found(error):
@@ -22,7 +30,7 @@ def home():
         {% block content %}
             {% include "home.html" %}
         {% endblock %}
-        """, **{'skills': skills, 'expenses': expenses})
+        """, **{'skills': skills, 'expenses': JSONEncoder().encode(list(expenses))})
 
 @app.route('/settings')
 @login_required

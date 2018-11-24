@@ -1,6 +1,7 @@
 {% block content %}
 <script>
   const activeSkills = [[skills|tojson|safe]];
+  const groupedBySkillExpanses = [[expenses|tojson|safe if expenses else []]];
 </script>
   <main id="home">
   <h1 style="text-align: center;">You still have <mark id="expenses-list-time-left"></mark><mark>minutes</mark> today to invest</h1>
@@ -42,21 +43,23 @@
     </div>
     <span class="justify-content-center d-flex position-absolute w-100">{{timeProgressBarText}}</span>
   </div>
-  </main>
   <section>
-    Totally invested today:
-    {% for expense in expenses %}
-    <div class="progress">
-      <div
-        class="progress-bar progress-bar-striped progress-bar-animated"
-        role="progressbar"
-        style="width: [[expense.total]]%"
-        aria-valuenow="[[expense.total]]"
-        aria-valuemin="0"
-        aria-valuemax="100">
+    <div v-for="expense in expenseGroups">
+      <h3>{{expense.name}}</h3>
+      <div class="progress">
+        <div
+          class="progress-bar"
+          role="progressbar"
+          v-bind:style="{width: groupAchievedInPercents(expense) + '%'}"
+          v-bind:aria-valuenow="groupAchievedInPercents(expense)"
+          aria-valuemin="0"
+          aria-valuemax="100">
+        </div>
+        <span class="justify-content-center d-flex position-absolute w-100">
+          {{expense.total}}/{{expense.target}}
+        </span>
       </div>
-      <span class="justify-content-center d-flex position-absolute w-100">[[expense.name]]: [[expense.total]] minutes</span>
     </div>
-    {% endfor %}
   </section>
+  </main>
 {% endblock %}

@@ -14,8 +14,8 @@ export function startActivity(expense) {
   .catch(error => console.error('Error:', error))
 }
 
-export function finishActivity(expense) {
-  fetch(`/api/expense/update/${expense.id}`, {
+export async function finishActivity(expense) {
+  await fetch(`/api/expense/update/${expense.id}`, {
     method: 'POST',
     body: JSON.stringify( {
       finished_at: new Date().toISOString().substr(0,19)
