@@ -48,9 +48,9 @@
     </div>
     {% block menu %}
     <div id="menu-div" class="with-margins nav nav-pills nav-fill">
-        <a href=[[ url_for('home') ]] class="nav-item">Home</a>
-        <a href=[[ url_for('time_log') ]] class="nav-item">Time log</a>
-        <a href=[[ url_for('settings') ]] class="nav-item">Settings</a>
+        <a href=[[ url_for('home') ]] class="nav-link">Home</a>
+        <a href=[[ url_for('time_log') ]] class="nav-link">Time log</a>
+        <a href=[[ url_for('settings') ]] class="nav-link">Settings</a>
     </div>
     {% endblock %}
     <hr class="no-margins"/>
@@ -86,7 +86,7 @@
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <!-- Bootstrap -->
     <script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-    <script type="module" src="[[ url_for('static', filename='js/home.js') ]]?version=77"></script>
+    <script type="module" src="[[ url_for('static', filename='js/home.js') ]]?version=88"></script>
     {# *** Allow sub-templates to insert extra html to the bottom of the body *** #}
     {% block extra_js %}{% endblock %}
 

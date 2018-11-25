@@ -14,8 +14,8 @@ export function startActivity(expense) {
   .catch(error => console.error('Error:', error))
 }
 
-export function finishActivity(expense) {
-  return fetch(`/api/expense/update/${expense.id}`, {
+export function finishActivity(expenseId) {
+  return fetch(`/api/expense/update/${expenseId}`, {
     method: 'POST',
     body: JSON.stringify( {
       finished_at: new Date().toISOString().substr(0,19)
@@ -29,12 +29,13 @@ export function finishActivity(expense) {
   .catch(error => console.error('Error:', error))
 }
 
-export function getTodaysActivityGroups(date) {
-  let queryDate = date;
-  if(!queryDate) {
-    queryDate = new Date().toISOString().substr(0,10)
-  }
-  return fetch(`/api/expense/groups/${queryDate}`, {
+export function getTodaysActivityGroups(
+    // today
+    start_date = new Date().toISOString().substr(0,10),
+    // tomorrow
+    end_date = new Date(new Date().setDate((new Date().getDate() + 1))).toISOString().substring(0,10)
+  ) {
+  return fetch(`/api/expense/groups/${start_date}/${end_date}`, {
     method: 'GET',
   })
   .then(res => res.json())

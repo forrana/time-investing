@@ -1,4 +1,4 @@
-import { startActivity, finishActivity, getTodaysActivityGroups } from "./api.js?version=8"
+import { startActivity, finishActivity, getTodaysActivityGroups } from "./api.js?version=13"
 import { showNotification } from "./notifications.js?version=1"
 const TIMER_STEP = 30
 
@@ -66,12 +66,14 @@ function clearProgress() {
 }
 
 async function onActivityStart() {
-  this.expense.id = await startActivity(this.expense).id;
+  const result = await startActivity(this.expense);
+  console.log(result);
+  this.expense.id= result;
   this.isActivityStarted = true;
   this.activityTimer = setInterval(async () => {
     this.timerProgress += TIMER_STEP;
     if(this.timerProgress >= this.expense.amount * 60) {
-      await finishActivity(this.expense);
+      await finishActivity(this.expense.id);
       const selectedActivityName = getSkillNameById(this.expense.skill);
       clearProgress.apply(this);
       showNotification("Good job!",

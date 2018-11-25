@@ -59,13 +59,16 @@ def expense_update(id):
         else:
             return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
 
-@app.route('/api/expense/groups/<date>', methods=['GET'])
+@app.route('/api/expense/groups/<start_date_str>/<end_date_str>/', methods=['GET'])
 @login_required
-def expense_groups(date):
+def expense_groups(start_date_str, end_date_str):
     if request.method == 'GET':
-        if date is not None:
-            start_date = datetime.strptime(date, '%Y-%m-%d')
-            end_date = start_date + timedelta(days=1)
+        if start_date_str is not None:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+            if end_date_str is not None:
+                end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+            else:
+                end_date = start_date + timedelta(days=1)
             expense_groups = Expense.objects(owner=current_user.id, finished_at__ne='', date__gte=start_date, date__lt=end_date ).aggregate(
                   {
                     "$group": { "_id": "$skill", "total": { "$sum": "$amount" }, "name": { "$first": "$skill_name"}}
