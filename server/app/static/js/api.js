@@ -1,5 +1,5 @@
 export function startActivity(expense) {
-  fetch("/api/expense/create", {
+  return fetch("/api/expense/create", {
     method: 'POST',
     body: JSON.stringify( {
       ...expense,
@@ -10,12 +10,12 @@ export function startActivity(expense) {
     }
   })
   .then(res => res.json())
-  .then(response => { expense.id = response.expense._id.$oid; return expense })
+  .then(response => response.expense._id.$oid)
   .catch(error => console.error('Error:', error))
 }
 
-export async function finishActivity(expense) {
-  await fetch(`/api/expense/update/${expense.id}`, {
+export function finishActivity(expense) {
+  return fetch(`/api/expense/update/${expense.id}`, {
     method: 'POST',
     body: JSON.stringify( {
       finished_at: new Date().toISOString().substr(0,19)
@@ -26,5 +26,18 @@ export async function finishActivity(expense) {
   })
   .then(res => res.json())
   .then(response => response.expense)
+  .catch(error => console.error('Error:', error))
+}
+
+export function getTodaysActivityGroups(date) {
+  let queryDate = date;
+  if(!queryDate) {
+    queryDate = new Date().toISOString().substr(0,10)
+  }
+  return fetch(`/api/expense/groups/${queryDate}`, {
+    method: 'GET',
+  })
+  .then(res => res.json())
+  .then(response => response)
   .catch(error => console.error('Error:', error))
 }

@@ -1,4 +1,4 @@
-import { startActivity, finishActivity } from "./api.js?version=3"
+import { startActivity, finishActivity, getTodaysActivityGroups } from "./api.js?version=8"
 import { showNotification } from "./notifications.js?version=1"
 const TIMER_STEP = 30
 
@@ -16,13 +16,15 @@ if(document.querySelector("#home")) {
     ).target_week || 0
   }
 
-  const groupedBySkillExpansesJson = JSON.parse(groupedBySkillExpanses);
-  const groupedExpansesWSkillName = groupedBySkillExpansesJson.map((group) => {
+  function populateGroupedExpansesWithSkillsData(group) {
     group.name = getSkillNameById(group._id);
     group.target = getSkillTargetHoursById(group._id) * 60;
     group.achievedTarget = group.total * 100 / group.target;
     return group;
-  })
+  }
+
+  const groupedBySkillExpansesJson = JSON.parse(groupedBySkillExpanses);
+  const groupedExpansesWSkillName = groupedBySkillExpansesJson.map(populateGroupedExpansesWithSkillsData);
 new Vue({
   el: '#home',
   data: {
@@ -63,25 +65,22 @@ function clearProgress() {
   clearInterval(this.activityTimer);
 }
 
-function onActivityStart() {
-  startActivity(this.expense);
+async function onActivityStart() {
+  this.expense.id = await startActivity(this.expense).id;
   this.isActivityStarted = true;
-  this.activityTimer = setInterval(() => {
+  this.activityTimer = setInterval(async () => {
     this.timerProgress += TIMER_STEP;
     if(this.timerProgress >= this.expense.amount * 60) {
-      finishActivity(this.expense);
+      await finishActivity(this.expense);
       const selectedActivityName = getSkillNameById(this.expense.skill);
       clearProgress.apply(this);
       showNotification("Good job!",
         `${this.expense.amount} minutes sucessfully invested into ${selectedActivityName}`);
-      this.expenseGroups = this.expenseGroups.map(
-        (group) => {
-          if(group.name === selectedActivityName) {
-            group.total = +group.total + +this.expense.amount;
-          }
-          return group;
-        }
-      );
+      let response = await getTodaysActivityGroups();
+      let expenses = JSON.parse(response.expense_groups);
+      if(expenses && expenses.length > 0) {
+        this.expenseGroups = expenses.map(populateGroupedExpansesWithSkillsData);
+      }
     }
   }, 1000)
 }

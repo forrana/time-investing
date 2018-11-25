@@ -2,7 +2,15 @@
 import os
 from flask import request, jsonify, url_for, redirect
 from app import app, Expense, login_required, current_user
-from datetime import datetime
+from datetime import datetime, timedelta
+import json
+from bson import ObjectId
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
 
 @app.route('/api/expense/create', methods=['POST'])
 @login_required
@@ -10,6 +18,8 @@ def expense_create():
     data = request.get_json()
     if request.method == 'POST':
         if data.get('skill', None) is not None:
+            if data.get('id', None) is not None:
+                del data['id']
             new_expense = Expense(**data)
             new_expense.started_at = datetime.strptime(data.get('started_at'), '%Y-%m-%dT%H:%M:%S')
             new_expense.save()
@@ -46,5 +56,21 @@ def expense_update(id):
                 return jsonify({'ok': True, 'message': db_response}), 200
             else:
                 return jsonify({'ok': False, 'message': 'Parsin params error!'}), 400
+        else:
+            return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
+
+@app.route('/api/expense/groups/<date>', methods=['GET'])
+@login_required
+def expense_groups(date):
+    if request.method == 'GET':
+        if date is not None:
+            start_date = datetime.strptime(date, '%Y-%m-%d')
+            end_date = start_date + timedelta(days=1)
+            expense_groups = Expense.objects(owner=current_user.id, finished_at__ne='', date__gte=start_date, date__lt=end_date ).aggregate(
+                  {
+                    "$group": { "_id": "$skill", "total": { "$sum": "$amount" }, "name": { "$first": "$skill_name"}}
+                  }
+                )
+            return jsonify({'ok': True, 'expense_groups': JSONEncoder().encode(list( expense_groups)) }), 200
         else:
             return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
