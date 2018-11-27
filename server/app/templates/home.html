@@ -1,7 +1,9 @@
 {% block content %}
 <script>
   const activeSkills = [[skills|tojson|safe]];
-  const groupedBySkillExpanses = [[expenses|tojson|safe if expenses else []]];
+  const groupedBySkillExpenses = [[expenses|tojson|safe if expenses else []]];
+  const groupedExpensesCurrentWeek = [[current_week_expenses|tojson|safe if expenses else []]];
+  const groupedExpensesPreviousWeek = [[previous_week_expenses|tojson|safe if expenses else []]];
 </script>
   <main id="home">
   <h1 style="text-align: center;">You still have <mark id="expenses-list-time-left"></mark><mark>minutes</mark> today to invest</h1>
@@ -44,22 +46,62 @@
     <span class="justify-content-center d-flex position-absolute w-100">{{timeProgressBarText}}</span>
   </div>
   <section>
+    <h2> Todays progress </h2>
     <div v-for="expense in expenseGroups">
       <h3>{{expense.name}}</h3>
       <div class="progress">
         <div
           class="progress-bar"
           role="progressbar"
-          v-bind:style="{width: groupAchievedInPercents(expense) + '%'}"
-          v-bind:aria-valuenow="groupAchievedInPercents(expense)"
+          v-bind:style="{width: groupAchievedInPercentsDay(expense) + '%'}"
+          v-bind:aria-valuenow="groupAchievedInPercentsDay(expense)"
           aria-valuemin="0"
           aria-valuemax="100">
         </div>
         <span class="justify-content-center d-flex position-absolute w-100">
-          {{expense.total}}/{{expense.target}}
+          {{expense.total}}/{{Math.round(expense.target/7)}} minutes
         </span>
       </div>
     </div>
   </section>
+  <section>
+    <h2> Week progress </h2>
+    <div v-for="expense in expenseThisWeekGroups">
+      <h3>{{expense.name}}</h3>
+      <div class="progress">
+        <div
+          class="progress-bar"
+          role="progressbar"
+          v-bind:style="{width: groupAchievedInPercentsWeek(expense) + '%'}"
+          v-bind:aria-valuenow="groupAchievedInPercentsWeek(expense)"
+          aria-valuemin="0"
+          aria-valuemax="100">
+        </div>
+        <span class="justify-content-center d-flex position-absolute w-100">
+          {{expense.total}}/{{Math.round(expense.target)}} minutes
+        </span>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h2> Previous Week progress </h2>
+    <div v-for="expense in expensePreviousWeekGroups">
+      <h3>{{expense.name}}</h3>
+      <div class="progress">
+        <div
+          class="progress-bar"
+          role="progressbar"
+          v-bind:style="{width: groupAchievedInPercentsWeek(expense) + '%'}"
+          v-bind:aria-valuenow="groupAchievedInPercentsWeek(expense)"
+          aria-valuemin="0"
+          aria-valuemax="100">
+        </div>
+        <span class="justify-content-center d-flex position-absolute w-100">
+          {{expense.total}}/{{Math.round(expense.target)}} minutes
+        </span>
+      </div>
+    </div>
+  </section>
+
   </main>
 {% endblock %}

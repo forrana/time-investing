@@ -23,8 +23,14 @@ if(document.querySelector("#home")) {
     return group;
   }
 
-  const groupedBySkillExpansesJson = JSON.parse(groupedBySkillExpanses);
-  const groupedExpansesWSkillName = groupedBySkillExpansesJson.map(populateGroupedExpansesWithSkillsData);
+  const groupedBySkillExpansesJson = JSON.parse(groupedBySkillExpenses);
+  const groupedExpansesCurrentWeekJson = JSON.parse(groupedExpensesCurrentWeek);
+  const groupedExpansesPreviousWeekJson = JSON.parse(groupedExpensesPreviousWeek);
+
+  const groupedExpansesWSkillData = groupedBySkillExpansesJson.map(populateGroupedExpansesWithSkillsData);
+  const groupedExpansesCurrentWeekWSkillData = groupedExpansesCurrentWeekJson.map(populateGroupedExpansesWithSkillsData);
+  const groupedExpansesPreviousWeekWSkillData = groupedExpansesPreviousWeekJson.map(populateGroupedExpansesWithSkillsData);
+
 new Vue({
   el: '#home',
   data: {
@@ -37,14 +43,20 @@ new Vue({
       skill: '',
       amount: 15
     },
-    expenseGroups: groupedExpansesWSkillName
+    expenseGroups: groupedExpansesWSkillData,
+    expenseThisWeekGroups: groupedExpansesCurrentWeekWSkillData,
+    expensePreviousWeekGroups: groupedExpansesPreviousWeekWSkillData
   },
   methods: {
     onActivityStart,
     onActivityStop,
-    groupAchievedInPercents: function(group) {
+    groupAchievedInPercentsWeek: function(group) {
       return group.total * 100 / group.target;
     },
+    groupAchievedInPercentsDay: function(group) {
+      return group.total * 100 / group.target * 7;
+    },
+
   },
   computed: {
     timeProgressBarText: function () {

@@ -19,8 +19,22 @@ def not_found(error):
 def home():
     today = datetime.utcnow().date()
     tomorrow = datetime.utcnow().date() + timedelta(days=1)
+    start_week = today - timedelta(days=today.weekday())
+    end_week = start_week + timedelta(days=6)
+    start_previous_week = start_week - timedelta(days=7)
+    end_previous_week = start_previous_week + timedelta(days=6)
     skills = Skill.objects(owner=current_user.id).order_by("name")
     expenses = Expense.objects(owner=current_user.id, finished_at__ne='', date__gte=today, date__lt=tomorrow ).aggregate(
+          {
+            "$group": { "_id": "$skill", "total": { "$sum": "$amount" }, "name": { "$first": "$skill_name"}}
+          }
+        )
+    current_week_expenses = Expense.objects(owner=current_user.id, finished_at__ne='', date__gte=start_week, date__lt=end_week ).aggregate(
+          {
+            "$group": { "_id": "$skill", "total": { "$sum": "$amount" }, "name": { "$first": "$skill_name"}}
+          }
+        )
+    previous_week_expenses = Expense.objects(owner=current_user.id, finished_at__ne='', date__gte=start_previous_week, date__lt=end_previous_week ).aggregate(
           {
             "$group": { "_id": "$skill", "total": { "$sum": "$amount" }, "name": { "$first": "$skill_name"}}
           }
@@ -30,7 +44,11 @@ def home():
         {% block content %}
             {% include "home.html" %}
         {% endblock %}
-        """, **{'skills': skills, 'expenses': JSONEncoder().encode(list(expenses))})
+        """, **{'skills': skills, \
+                'expenses': JSONEncoder().encode(list(expenses)), \
+                'current_week_expenses': JSONEncoder().encode(list(current_week_expenses)), \
+                'previous_week_expenses': JSONEncoder().encode(list(previous_week_expenses))} \
+        )
 
 @app.route('/settings')
 @login_required
