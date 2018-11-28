@@ -20,6 +20,7 @@ class User(db.Document, UserMixin):
     password = db.StringField()
     created_at = db.DateTimeField()
     updated_at = db.DateTimeField()
+    default_time = db.DecimalField()
     roles = db.ListField(db.StringField(), default=[])
 
     def save(self, *args, **kwargs):
