@@ -47,8 +47,9 @@ def home():
         """, **{'skills': skills, \
                 'expenses': JSONEncoder().encode(list(expenses)), \
                 'current_week_expenses': JSONEncoder().encode(list(current_week_expenses)), \
-                'previous_week_expenses': JSONEncoder().encode(list(previous_week_expenses))} \
-        )
+                'previous_week_expenses': JSONEncoder().encode(list(previous_week_expenses)), \
+                'default_time': current_user.default_time \
+        })
 
 @app.route('/settings')
 @login_required
@@ -58,9 +59,10 @@ def settings():
     return render_template_string("""
         {% extends "flask_user_layout.html" %}
         {% block content %}
-            {% include "settings.html" %}
+            {% include "settings/settings.html" %}
         {% endblock %}
-        """, **{'attributes': attributes, 'skills': skills})
+        """, **{'attributes': attributes, 'skills': skills, 'id': current_user.id, \
+            'default_time': current_user.default_time})
 
 @app.route('/time_log')
 @login_required    # User must be authenticated

@@ -22,10 +22,11 @@ if(document.querySelector("#home")) {
     group.achievedTarget = group.total * 100 / group.target;
     return group;
   }
-
+  // Data revieved from server through global vars
   const groupedBySkillExpansesJson = JSON.parse(groupedBySkillExpenses);
   const groupedExpansesCurrentWeekJson = JSON.parse(groupedExpensesCurrentWeek);
   const groupedExpansesPreviousWeekJson = JSON.parse(groupedExpensesPreviousWeek);
+  const defaultTime = defaultTimeFlask;
 
   const groupedExpansesWSkillData = groupedBySkillExpansesJson.map(populateGroupedExpansesWithSkillsData);
   const groupedExpansesCurrentWeekWSkillData = groupedExpansesCurrentWeekJson.map(populateGroupedExpansesWithSkillsData);
@@ -34,14 +35,14 @@ if(document.querySelector("#home")) {
 new Vue({
   el: '#home',
   data: {
-    selectedAmountOfTime: 15,
+    selectedAmountOfTime: 45,
     isActivityStarted: false,
     timerProgress: 0,
     timePassedSec: 0,
     activityTimer: null,
     expense: {
       skill: '',
-      amount: 15
+      amount: defaultTime
     },
     expenseGroups: groupedExpansesWSkillData,
     expenseThisWeekGroups: groupedExpansesCurrentWeekWSkillData,

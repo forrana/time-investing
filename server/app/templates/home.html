@@ -4,6 +4,7 @@
   const groupedBySkillExpenses = [[expenses|tojson|safe if expenses else []]];
   const groupedExpensesCurrentWeek = [[current_week_expenses|tojson|safe if expenses else []]];
   const groupedExpensesPreviousWeek = [[previous_week_expenses|tojson|safe if expenses else []]];
+  const defaultTimeFlask = [[default_time | int]]
 </script>
   <main id="home">
   <h1 style="text-align: center;">You still have <mark id="expenses-list-time-left"></mark><mark>minutes</mark> today to invest</h1>
@@ -16,9 +17,8 @@
         {% endfor %}
       </select>
       <select class="form-control" v-model="expense.amount" :disabled="isActivityStarted">
-          <option value="1">1 minute</option>
         {% for n in range(4) %}
-          <option value="[[15*(n + 1)]]">[[15*(n+1)]] minutes</option>
+            <option value="[[15*(n + 1)]]">[[15*(n+1)]] minutes</option>
         {% endfor %}
       </select>
       <button

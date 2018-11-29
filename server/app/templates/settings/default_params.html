@@ -1,0 +1,15 @@
+<form class="" action="/user" method="POST">
+  <div class="form-group">
+    <input type="hidden" name="id" value="[[id]]" />
+    <select class="form-control" name="default_time">
+      {% for n in range(4) %}
+        {% if 15*(n+1) == default_time | int %}
+          <option value="[[15*(n + 1)]]" selected="selected">[[15*(n+1)]] minutes</option>
+        {% else %}
+          <option value="[[15*(n + 1)]]">[[15*(n+1)]] minutes</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    <input type="submit" title="update" class="btn btn-primary"/>
+  </div>
+</form>

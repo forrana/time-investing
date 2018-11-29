@@ -1,6 +1,6 @@
 ''' controller and routes for users '''
 import os
-from flask import request, jsonify
+from flask import request, jsonify, redirect, url_for
 from app import app, User, login_required
 
 @app.route('/user', methods=['GET', 'POST', 'DELETE', 'PATCH'])
@@ -11,13 +11,17 @@ def user():
         data = User.objects(query)
         return jsonify(data), 200
 
-    data = request.get_json()
+    data = request.form
     if request.method == 'POST':
-        if data.get('email', None) is not None:
-            User.objects(email=data['email']).insert_one(data)
-            return jsonify({'ok': True, 'message': 'User created successfully!'}), 200
+        if data.get('id', None) is not None and data.get('default_time', None) is not None:
+            User.objects(id=data['id']).update_one(default_time=data.get('default_time'))
+            return redirect(url_for('settings'))
         else:
-            return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
+            if data.get('email', None) is not None:
+                User.objects(email=data['email']).insert_one(data)
+                return jsonify({'ok': True, 'message': 'User created successfully!'}), 200
+            else:
+                return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
 
     if request.method == 'DELETE':
         if data.get('email', None) is not None:
@@ -27,13 +31,5 @@ def user():
             else:
                 response = {'ok': True, 'message': 'no record found'}
             return jsonify(response), 200
-        else:
-            return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
-
-    if request.method == 'PATCH':
-        if data.get('query', {}) != {}:
-            User.objects(data['query']).update_one(
-                data['query'], {'$set': data.get('payload', {})})
-            return jsonify({'ok': True, 'message': 'record updated'}), 200
         else:
             return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
