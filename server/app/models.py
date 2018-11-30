@@ -54,6 +54,7 @@ class Skill(TimeStampsOwnerModel):
     target_week = db.FloatField(default=0)
     target_month = db.FloatField(default=0)
     target_year = db.FloatField(default=0)
+    color = db.StringField()
     attributes = db.ListField(db.ReferenceField(Attribute))
 
     def stringify_attributes(self):

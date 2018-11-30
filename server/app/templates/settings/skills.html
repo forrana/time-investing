@@ -19,6 +19,9 @@
       </select>
     </td>
     <td>
+      <input type="color" name="color" value="#ff0000">
+    </td>
+    <td>
       <input class="btn btn-default" type="submit"/>
     </td>
   </tr>
@@ -36,6 +39,9 @@
     </td>
     <td>
       [[skill.stringify_attributes()]]
+    </td>
+    <td>
+      <input type="color" name="color" value="[[skill.color]]" disabled>
     </td>
     <td>
       <form action="[[ url_for('skill_delete', id=skill.id) ]]" method=post>
