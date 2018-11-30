@@ -53,7 +53,7 @@
         <div
           class="progress-bar"
           role="progressbar"
-          v-bind:style="{width: groupAchievedInPercentsDay(expense) + '%'}"
+          v-bind:style="{width: groupAchievedInPercentsDay(expense) + '%', backgroundColor: expense.color}"
           v-bind:aria-valuenow="groupAchievedInPercentsDay(expense)"
           aria-valuemin="0"
           aria-valuemax="100">
@@ -67,12 +67,12 @@
   <section>
     <h2> Week progress </h2>
     <div v-for="expense in expenseThisWeekGroups">
-      <h3>{{expense.name}}</h3>
+      <h3>{{expense.name}} {{expense.color}}</h3>
       <div class="progress">
         <div
           class="progress-bar"
           role="progressbar"
-          v-bind:style="{width: groupAchievedInPercentsWeek(expense) + '%'}"
+          v-bind:style="{width: groupAchievedInPercentsWeek(expense) + '%', backgroundColor: expense.color}"
           v-bind:aria-valuenow="groupAchievedInPercentsWeek(expense)"
           aria-valuemin="0"
           aria-valuemax="100">
@@ -91,7 +91,7 @@
         <div
           class="progress-bar"
           role="progressbar"
-          v-bind:style="{width: groupAchievedInPercentsWeek(expense) + '%'}"
+          v-bind:style="{width: groupAchievedInPercentsWeek(expense) + '%', backgroundColor: expense.color}"
           v-bind:aria-valuenow="groupAchievedInPercentsWeek(expense)"
           aria-valuemin="0"
           aria-valuemax="100">

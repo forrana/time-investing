@@ -4,24 +4,26 @@ const TIMER_STEP = 30
 
 
 if(document.querySelector("#home")) {
-  function getSkillNameById(skillId) {
-    return activeSkills.find(
-      ({_id}) => _id.$oid == skillId
-    ).name || ""
-  }
 
-  function getSkillTargetHoursById(skillId) {
+  function getSkillById(skillId) {
     return activeSkills.find(
       ({_id}) => _id.$oid == skillId
-    ).target_week || 0
+    )
   }
 
   function populateGroupedExpansesWithSkillsData(group) {
-    group.name = getSkillNameById(group._id);
-    group.target = getSkillTargetHoursById(group._id) * 60;
-    group.achievedTarget = group.total * 100 / group.target;
+    const skill = getSkillById(group._id);
+    if(skill) {
+      group = {
+        ...group,
+        name: skill.name,
+        target: skill.target_week * 60, // hours to minutes
+        color: skill.color || "#000000" };
+      group.achievedTarget = group.total * 100 / group.target;
+    }
     return group;
   }
+
   // Data revieved from server through global vars
   const groupedBySkillExpansesJson = JSON.parse(groupedBySkillExpenses);
   const groupedExpansesCurrentWeekJson = JSON.parse(groupedExpensesCurrentWeek);
@@ -80,14 +82,13 @@ function clearProgress() {
 
 async function onActivityStart() {
   const result = await startActivity(this.expense);
-  console.log(result);
   this.expense.id= result;
   this.isActivityStarted = true;
   this.activityTimer = setInterval(async () => {
     this.timerProgress += TIMER_STEP;
     if(this.timerProgress >= this.expense.amount * 60) {
       await finishActivity(this.expense.id);
-      const selectedActivityName = getSkillNameById(this.expense.skill);
+      const selectedActivityName = getSkillById(this.expense.skill).name;
       clearProgress.apply(this);
       showNotification("Good job!",
         `${this.expense.amount} minutes sucessfully invested into ${selectedActivityName}`);
