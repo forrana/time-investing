@@ -37,7 +37,7 @@ if(document.querySelector("#home")) {
 new Vue({
   el: '#home',
   data: {
-    selectedAmountOfTime: 45,
+    selectedAmountOfTime: 0,
     isActivityStarted: false,
     timerProgress: 0,
     timePassedSec: 0,
@@ -59,9 +59,14 @@ new Vue({
     groupAchievedInPercentsDay: function(group) {
       return group.total * 100 / group.target * 7;
     },
-
+    groupeAchievedInProportionDay: function(group, total) {
+      return group.total * 100 / total;
+    }
   },
   computed: {
+    totalyInvestedToday: function () {
+      return this.expenseGroups.reduce( (accumulator, {total}) => accumulator += total || 0, 0);
+    },
     timeProgressBarText: function () {
       if(!this.isActivityStarted) return "";
       return `${this.timerProgress}/${this.expense.amount * 60} seconds`;

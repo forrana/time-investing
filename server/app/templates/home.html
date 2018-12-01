@@ -1,4 +1,5 @@
 {% block content %}
+<link rel="stylesheet" href="[[ url_for('static', filename='home.css') ]]">
 <script>
   const activeSkills = [[skills|tojson|safe]];
   const groupedBySkillExpenses = [[expenses|tojson|safe if expenses else []]];
@@ -7,8 +8,10 @@
   const defaultTimeFlask = [[default_time | int]]
 </script>
   <main id="home">
-  <h1 style="text-align: center;">You still have <mark id="expenses-list-time-left"></mark><mark>minutes</mark> today to invest</h1>
-  <div style="display: flex">
+  <h1 class="home-main-header">You still have
+    <mark id="expenses-list-time-left"></mark><mark>minutes</mark> today to invest
+  </h1>
+  <div>
     <div class="input-group mb-3">
       <select class="form-control" name="skill" v-model="expense.skill" :disabled="isActivityStarted">
           <option value=""> Chose an activity and press start to invest! </option>
@@ -45,8 +48,24 @@
     </div>
     <span class="justify-content-center d-flex position-absolute w-100">{{timeProgressBarText}}</span>
   </div>
+
   <section>
     <h2> Todays progress </h2>
+    <div class="progress">
+        <div
+          v-for="expense in expenseGroups"
+          class="progress-bar"
+          role="progressbar"
+          v-bind:style="{width: groupeAchievedInProportionDay(expense, totalyInvestedToday) + '%', backgroundColor: expense.color}"
+          v-bind:aria-valuenow="groupeAchievedInProportionDay(expense, totalyInvestedToday)"
+          aria-valuemin="0"
+          aria-valuemax="100">
+        </div>
+        <span class="justify-content-center d-flex position-absolute w-100">
+          {{totalyInvestedToday}} minutes
+        </span>
+    </div>
+
     <div v-for="expense in expenseGroups">
       <h3>{{expense.name}}</h3>
       <div class="progress">
@@ -64,10 +83,11 @@
       </div>
     </div>
   </section>
+
   <section>
     <h2> Week progress </h2>
     <div v-for="expense in expenseThisWeekGroups">
-      <h3>{{expense.name}} {{expense.color}}</h3>
+      <h3>{{expense.name}}</h3>
       <div class="progress">
         <div
           class="progress-bar"
@@ -83,6 +103,7 @@
       </div>
     </div>
   </section>
+
   <section>
     <h2> Previous Week progress </h2>
     <div v-for="expense in expensePreviousWeekGroups">
@@ -102,6 +123,5 @@
       </div>
     </div>
   </section>
-
   </main>
 {% endblock %}
