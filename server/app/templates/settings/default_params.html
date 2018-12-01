@@ -1,7 +1,9 @@
+<h2>Default parametrs</h2>
 <form class="" action="/user" method="POST">
-  <div class="form-group">
+  <label for="default_time">Default activity time</label>
+  <div class="input-group">
     <input type="hidden" name="id" value="[[id]]" />
-    <select class="form-control" name="default_time">
+    <select class="form-control" name="default_time" id="default_time">
       {% for n in range(4) %}
         {% if 15*(n+1) == default_time | int %}
           <option value="[[15*(n + 1)]]" selected="selected">[[15*(n+1)]] minutes</option>

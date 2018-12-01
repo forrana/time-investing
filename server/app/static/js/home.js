@@ -1,6 +1,6 @@
 import { startActivity, finishActivity, getTodaysActivityGroups } from "./api.js?version=13"
 import { showNotification } from "./notifications.js?version=1"
-const TIMER_STEP = 30
+const TIMER_STEP = 60
 
 
 if(document.querySelector("#home")) {
