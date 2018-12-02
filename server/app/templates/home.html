@@ -14,12 +14,13 @@
   <div>
     <div class="input-group mb-3">
       <select class="form-control" name="skill" v-model="expense.skill" :disabled="isActivityStarted">
-          <option value=""> Chose an activity and press start to invest! </option>
+          <option value="" disabled> Chose an activity! </option>
         {% for skill in skills %}
           <option value="[[skill.id]]">[[skill.name]]</option>
         {% endfor %}
       </select>
       <select class="form-control" v-model="expense.amount" :disabled="isActivityStarted">
+          <option value="0" disabled selected> Chose amount of time. </option>
         {% for n in range(4) %}
             <option value="[[15*(n + 1)]]">[[15*(n+1)]] minutes</option>
         {% endfor %}

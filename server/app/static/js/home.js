@@ -28,7 +28,7 @@ if(document.querySelector("#home")) {
   const groupedBySkillExpansesJson = JSON.parse(groupedBySkillExpenses);
   const groupedExpansesCurrentWeekJson = JSON.parse(groupedExpensesCurrentWeek);
   const groupedExpansesPreviousWeekJson = JSON.parse(groupedExpensesPreviousWeek);
-  const defaultTime = defaultTimeFlask;
+  const defaultTime = defaultTimeFlask || 0;
 
   const groupedExpansesWSkillData = groupedBySkillExpansesJson.map(populateGroupedExpansesWithSkillsData);
   const groupedExpansesCurrentWeekWSkillData = groupedExpansesCurrentWeekJson.map(populateGroupedExpansesWithSkillsData);
