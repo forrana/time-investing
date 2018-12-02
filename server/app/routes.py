@@ -54,8 +54,8 @@ def home():
 @app.route('/settings')
 @login_required
 def settings():
-    attributes = Attribute.objects(owner=current_user.id).order_by("name")
-    skills = Skill.objects(owner=current_user.id).order_by("name")
+    attributes = Attribute.objects(owner=current_user.id, deleted_at='').order_by("name")
+    skills = Skill.objects(owner=current_user.id, deleted_at='').order_by("name")
     return render_template_string("""
         {% extends "flask_user_layout.html" %}
         {% block content %}

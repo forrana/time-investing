@@ -44,10 +44,16 @@ class TimeStampsOwnerModel(db.Document):
         self.owner = current_user.id
         return super(TimeStampsOwnerModel, self).save(*args, **kwargs)
 
-class Attribute(TimeStampsOwnerModel):
+class SafeDeletionModel(db.Document):
+    meta = {
+        'abstract': True
+    }
+    deleted_at = db.DateTimeField()
+
+class Attribute(TimeStampsOwnerModel, SafeDeletionModel):
     name = db.StringField()
 
-class Skill(TimeStampsOwnerModel):
+class Skill(TimeStampsOwnerModel, SafeDeletionModel):
     name = db.StringField()
     description = db.StringField()
     target_day = db.FloatField(default=0)

@@ -28,7 +28,7 @@ def attribute_get():
 @login_required
 def attribute_delete(id):
     if id is not None:
-        db_response = Attribute.objects(id=id).delete()
+        db_response = Attribute.objects(id=id).update(deleted_at=datetime.now())
         return redirect(url_for('settings'))
     else:
         return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400

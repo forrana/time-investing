@@ -29,7 +29,7 @@ def skill_get():
 @login_required
 def skill_delete(id):
     if id is not None:
-        db_response = Skill.objects(id=id).delete()
+        db_response = Skill.objects(id=id).update(deleted_at=datetime.now())
         return redirect(url_for('settings'))
     else:
         return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
