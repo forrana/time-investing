@@ -6,9 +6,6 @@
       <input class="form-control" required name="name" title="enter skill name" placeholder="Name"/>
     </td>
     <td>
-      <input class="form-control" name="description" title="enter skill description" placeholder="Description"/>
-    </td>
-    <td>
       <input type="number" required class="form-control" name="target_week" title="Enter target amount hours per week" placeholder="hours per week"/>
     </td>
     <td>
@@ -27,22 +24,24 @@
   </tr>
   </form>
   {% for skill in skills %}
+  <form class="" action="[[ url_for('skill_update', id=skill.id) ]]" method="post">
   <tr>
     <td>
-      [[skill.name]]
+      <input class="form-control" required name="name" title="enter skill name" placeholder="Name" value="[[skill.name]]"/>
     </td>
     <td>
-      [[skill.description]]
-    </td>
-    <td>
-      [[skill.target_week]]
+      <input type="number" required class="form-control" name="target_week" title="Enter target amount hours per week" placeholder="hours per week" value="[[skill.target_week]]"/>
     </td>
     <td>
       [[skill.stringify_attributes()]]
     </td>
     <td>
-      <input type="color" name="color" value="[[skill.color]]" disabled>
+      <input type="color" name="color" value="[[skill.color]]">
     </td>
+    <td>
+      <button type="submit" class="btn btn-primary">Update</buton>
+    </td>
+    </form>
     <td>
       <form action="[[ url_for('skill_delete', id=skill.id) ]]" method=post>
         <button type="submit" class="btn btn-danger">Delete</buton>

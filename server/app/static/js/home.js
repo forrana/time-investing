@@ -37,7 +37,6 @@ if(document.querySelector("#home")) {
 new Vue({
   el: '#home',
   data: {
-    selectedAmountOfTime: 0,
     isActivityStarted: false,
     timerProgress: 0,
     timePassedSec: 0,

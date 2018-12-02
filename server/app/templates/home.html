@@ -27,7 +27,7 @@
       <button
         class="btn btn-default input-group-append"
         v-on:click="onActivityStart"
-        :disabled="!expense.skill || !selectedAmountOfTime"
+        :disabled="!expense.skill || !expense.amount"
         v-if="!isActivityStarted"
         >Start!</button>
       <button

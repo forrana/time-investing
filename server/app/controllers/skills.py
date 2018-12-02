@@ -34,13 +34,15 @@ def skill_delete(id):
     else:
         return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
 
-@app.route('/api/skill/update', methods=['PATCH'])
+@app.route('/api/skill/update/', methods=['POST'])
 @login_required
 def skill_update():
-    if request.method == 'PATCH':
-        if data.get('query', {}) != {}:
-            Skill.objects(data['query']).update_one(
-                data['query'], {'$set': data.get('payload', {})})
+    data = request
+    form = data.form.copy()
+    if request.method == 'POST':
+        if data.args['id'] != None:
+            print(data.args)
+            Skill.objects(id=data.args['id']).update_one(**form)
             return redirect(url_for('settings'))
         else:
             return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
