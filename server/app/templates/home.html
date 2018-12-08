@@ -38,6 +38,7 @@
         >Stop!</button>
     </div>
   </div>
+  <h2> Current progress </h2>
   <div class="progress">
     <div
       class="progress-bar progress-bar-striped progress-bar-animated"
@@ -47,10 +48,12 @@
       aria-valuemin="0"
       aria-valuemax="100">
     </div>
-    <span class="justify-content-center d-flex position-absolute w-100">{{timeProgressBarText}}</span>
+    <span class="progress-bar-title">
+      {{timeProgressBarText}}
+    </span>
   </div>
 
-  <section>
+  <section v-if="expenseGroups.length">
     <h2> Todays progress </h2>
     <div class="progress">
         <div
@@ -62,7 +65,7 @@
           aria-valuemin="0"
           aria-valuemax="100">
         </div>
-        <span class="justify-content-center d-flex position-absolute w-100">
+        <span class="progress-bar-title">
           {{totalyInvestedToday}} minutes
         </span>
     </div>
@@ -78,15 +81,30 @@
           aria-valuemin="0"
           aria-valuemax="100">
         </div>
-        <span class="justify-content-center d-flex position-absolute w-100">
+        <span class="progress-bar-title">
           {{expense.total}}/{{Math.round(expense.target/7)}} minutes
         </span>
       </div>
     </div>
   </section>
 
-  <section>
+  <section v-if="expenseThisWeekGroups.length">
     <h2> Week progress </h2>
+    <div class="progress">
+        <div
+          v-for="expense in expenseThisWeekGroups"
+          class="progress-bar"
+          role="progressbar"
+          v-bind:style="{width: groupeAchievedInProportionDay(expense, totalyInvestedToday) + '%', backgroundColor: expense.color}"
+          v-bind:aria-valuenow="groupeAchievedInProportionDay(expense, totalyInvestedToday)"
+          aria-valuemin="0"
+          aria-valuemax="100">
+        </div>
+        <span class="progress-bar-title">
+          {{totalyInvestedToday}} minutes
+        </span>
+    </div>
+
     <div v-for="expense in expenseThisWeekGroups">
       <h3>{{expense.name}}</h3>
       <div class="progress">
@@ -98,15 +116,29 @@
           aria-valuemin="0"
           aria-valuemax="100">
         </div>
-        <span class="justify-content-center d-flex position-absolute w-100">
+        <span class="progress-bar-title">
           {{expense.total}}/{{Math.round(expense.target)}} minutes
         </span>
       </div>
     </div>
   </section>
 
-  <section>
+  <section v-if="expensePreviousWeekGroups.length">
     <h2> Previous Week progress </h2>
+    <div class="progress">
+        <div
+          v-for="expense in expenseThisWeekGroups"
+          class="progress-bar"
+          role="progressbar"
+          v-bind:style="{width: groupeAchievedInProportionDay(expense, totalyInvestedToday) + '%', backgroundColor: expense.color}"
+          v-bind:aria-valuenow="groupeAchievedInProportionDay(expense, totalyInvestedToday)"
+          aria-valuemin="0"
+          aria-valuemax="100">
+        </div>
+        <span class="progress-bar-title">
+          {{totalyInvestedToday}} minutes
+        </span>
+    </div>
     <div v-for="expense in expensePreviousWeekGroups">
       <h3>{{expense.name}}</h3>
       <div class="progress">
@@ -118,7 +150,7 @@
           aria-valuemin="0"
           aria-valuemax="100">
         </div>
-        <span class="justify-content-center d-flex position-absolute w-100">
+        <span class="progress-bar-title">
           {{expense.total}}/{{Math.round(expense.target)}} minutes
         </span>
       </div>
