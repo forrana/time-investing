@@ -20,9 +20,9 @@ def home():
     today = datetime.utcnow().date()
     tomorrow = datetime.utcnow().date() + timedelta(days=1)
     start_week = today - timedelta(days=today.weekday())
-    end_week = start_week + timedelta(days=6)
-    start_previous_week = start_week - timedelta(days=7)
-    end_previous_week = start_previous_week + timedelta(days=6)
+    end_week = start_week + timedelta(days=7)
+    start_previous_week = start_week - timedelta(days=8)
+    end_previous_week = start_previous_week + timedelta(days=7)
     skills = Skill.objects(owner=current_user.id).order_by("name")
     expenses = Expense.objects(owner=current_user.id, finished_at__ne='', date__gte=today, date__lt=tomorrow ).aggregate(
           {

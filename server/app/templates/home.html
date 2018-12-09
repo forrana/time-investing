@@ -53,78 +53,80 @@
     </span>
   </div>
 
-  <section v-if="expenseGroups.length">
-    <h2> Todays progress </h2>
-    <div class="progress">
-        <div
-          v-for="expense in expenseGroups"
-          class="progress-bar"
-          role="progressbar"
-          v-bind:style="{width: groupeAchievedInProportionDay(expense, totalyInvestedToday) + '%', backgroundColor: expense.color}"
-          v-bind:aria-valuenow="groupeAchievedInProportionDay(expense, totalyInvestedToday)"
-          aria-valuemin="0"
-          aria-valuemax="100">
-        </div>
-        <span class="progress-bar-title">
-          {{totalyInvestedToday}} minutes
-        </span>
-    </div>
-
-    <div v-for="expense in expenseGroups">
-      <h3>{{expense.name}}</h3>
+  <section class="statistics-block">
+    <section v-if="expenseGroups.length" class="card statistics-section">
+      <h2 class="text-center text-uppercase"> Todays progress </h2>
       <div class="progress">
-        <div
-          class="progress-bar"
-          role="progressbar"
-          v-bind:style="{width: groupAchievedInPercentsDay(expense) + '%', backgroundColor: expense.color}"
-          v-bind:aria-valuenow="groupAchievedInPercentsDay(expense)"
-          aria-valuemin="0"
-          aria-valuemax="100">
-        </div>
-        <span class="progress-bar-title">
-          {{expense.total}}/{{Math.round(expense.target/7)}} minutes
-        </span>
+          <div
+            v-for="expense in expenseGroups"
+            class="progress-bar"
+            role="progressbar"
+            v-bind:style="{width: groupeAchievedInProportionDay(expense, totalyInvestedToday) + '%', backgroundColor: expense.color}"
+            v-bind:aria-valuenow="groupeAchievedInProportionDay(expense, totalyInvestedToday)"
+            aria-valuemin="0"
+            aria-valuemax="100">
+          </div>
+          <span class="progress-bar-title">
+            {{totalyInvestedToday}} minutes
+          </span>
       </div>
-    </div>
-  </section>
 
-  <section v-if="expenseThisWeekGroups.length">
-    <h2> Week progress </h2>
-    <div class="progress">
-        <div
-          v-for="expense in expenseThisWeekGroups"
-          class="progress-bar"
-          role="progressbar"
-          v-bind:style="{width: groupeAchievedInProportionDay(expense, totalyInvestedToday) + '%', backgroundColor: expense.color}"
-          v-bind:aria-valuenow="groupeAchievedInProportionDay(expense, totalyInvestedToday)"
-          aria-valuemin="0"
-          aria-valuemax="100">
+      <div v-for="expense in expenseGroups">
+        <h3>{{expense.name}}</h3>
+        <div class="progress">
+          <div
+            class="progress-bar"
+            role="progressbar"
+            v-bind:style="{width: groupAchievedInPercentsDay(expense) + '%', backgroundColor: expense.color}"
+            v-bind:aria-valuenow="groupAchievedInPercentsDay(expense)"
+            aria-valuemin="0"
+            aria-valuemax="100">
+          </div>
+          <span class="progress-bar-title">
+            {{expense.total}}/{{Math.round(expense.target)}} minutes
+          </span>
         </div>
-        <span class="progress-bar-title">
-          {{totalyInvestedToday}} minutes
-        </span>
-    </div>
+      </div>
+    </section>
 
-    <div v-for="expense in expenseThisWeekGroups">
-      <h3>{{expense.name}}</h3>
+    <section v-if="expenseThisWeekGroups.length" class="card statistics-section">
+      <h2 class="text-center text-uppercase"> Week progress </h2>
       <div class="progress">
-        <div
-          class="progress-bar"
-          role="progressbar"
-          v-bind:style="{width: groupAchievedInPercentsWeek(expense) + '%', backgroundColor: expense.color}"
-          v-bind:aria-valuenow="groupAchievedInPercentsWeek(expense)"
-          aria-valuemin="0"
-          aria-valuemax="100">
-        </div>
-        <span class="progress-bar-title">
-          {{expense.total}}/{{Math.round(expense.target)}} minutes
-        </span>
+          <div
+            v-for="expense in expenseThisWeekGroups"
+            class="progress-bar"
+            role="progressbar"
+            v-bind:style="{width: groupeAchievedInProportionDay(expense, totalyInvestedToday) + '%', backgroundColor: expense.color}"
+            v-bind:aria-valuenow="groupeAchievedInProportionDay(expense, totalyInvestedToday)"
+            aria-valuemin="0"
+            aria-valuemax="100">
+          </div>
+          <span class="progress-bar-title">
+            {{totalyInvestedToday}} minutes
+          </span>
       </div>
-    </div>
+
+      <div v-for="expense in expenseThisWeekGroups">
+        <h3>{{expense.name}}</h3>
+        <div class="progress">
+          <div
+            class="progress-bar"
+            role="progressbar"
+            v-bind:style="{width: groupAchievedInPercentsWeek(expense) + '%', backgroundColor: expense.color}"
+            v-bind:aria-valuenow="groupAchievedInPercentsWeek(expense)"
+            aria-valuemin="0"
+            aria-valuemax="100">
+          </div>
+          <span class="progress-bar-title">
+            {{expense.total}}/{{Math.round(expense.target*7)}} minutes
+          </span>
+        </div>
+      </div>
+    </section>
   </section>
 
   <section v-if="expensePreviousWeekGroups.length">
-    <h2> Previous Week progress </h2>
+    <h2 class="text-center text-uppercase"> Previous Week progress </h2>
     <div class="progress">
         <div
           v-for="expense in expenseThisWeekGroups"
@@ -151,7 +153,7 @@
           aria-valuemax="100">
         </div>
         <span class="progress-bar-title">
-          {{expense.total}}/{{Math.round(expense.target)}} minutes
+          {{expense.total}}/{{Math.round(expense.target*7)}} minutes
         </span>
       </div>
     </div>

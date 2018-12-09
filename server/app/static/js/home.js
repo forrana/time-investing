@@ -17,9 +17,9 @@ if(document.querySelector("#home")) {
       group = {
         ...group,
         name: skill.name,
-        target: skill.target_week * 60, // hours to minutes
+        target: skill.target_day,
         color: skill.color || "#000000" };
-      group.achievedTarget = group.total * 100 / group.target;
+      group.achievedTarget = group.total * 100 / (group.target * 7); //day's target to week
     }
     return group;
   }
@@ -53,10 +53,10 @@ new Vue({
     onActivityStart,
     onActivityStop,
     groupAchievedInPercentsWeek: function(group) {
-      return group.total * 100 / group.target;
+      return group.total * 100 / (group.target*7);
     },
     groupAchievedInPercentsDay: function(group) {
-      return group.total * 100 / group.target * 7;
+      return group.total * 100 / group.target;
     },
     groupeAchievedInProportionDay: function(group, total) {
       return group.total * 100 / total;

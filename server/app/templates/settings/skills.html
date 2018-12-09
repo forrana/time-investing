@@ -6,7 +6,7 @@
       <input class="form-control" required name="name" title="enter skill name" placeholder="Name"/>
     </td>
     <td>
-      <input type="number" required class="form-control" name="target_week" title="Enter target amount hours per week" placeholder="hours per week"/>
+      <input type="number" required class="form-control" name="target_day" title="Enter target amount minutes per day" placeholder="Minutes per day"/>
     </td>
     <td>
       <select class="form-control" required name="attributes" multiple>
@@ -31,7 +31,7 @@
       <input class="form-control" required name="name" title="enter skill name" placeholder="Name" value="[[skill.name]]"/>
     </td>
     <td>
-      <input type="number" required class="form-control" name="target_week" title="Enter target amount hours per week" placeholder="hours per week" value="[[skill.target_week]]"/>
+      <input type="number" required class="form-control" name="target_day" title="Enter target amount minutes per day" placeholder="Minutes per day" value="[[skill.target_day]]"/>
     </td>
     <td>
       [[skill.stringify_attributes()]]
@@ -45,7 +45,7 @@
     </form>
     <td>
       <form action="[[ url_for('skill_delete', id=skill.id) ]]" method=post>
-        <button type="submit" class="btn btn-danger">Delete</buton>
+        <button type="submit" class="btn btn-danger">Delete</button>
       </form>
     </td>
   </tr>

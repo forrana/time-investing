@@ -7,21 +7,34 @@
 }
 
 .progress {
-  width: 95vw;
   text-align: center;
   height: var(--progress-bar-height);
 }
 
 .progress .progress-bar-title {
+  width: 100%;
   mix-blend-mode: exclusion;
   color: coral;
   font-weight: 700;
   font-size: calc(var(--progress-bar-height) - 0.85em);
   height: var(--progress-bar-height);
   display: flex;
-  width: 95vw;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   position: absolute;
+}
+
+.statistics-block {
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1em;
+}
+
+.statistics-block .statistics-section {
+  padding: 1em;
+  border-image: linear-gradient(to left, #61c69d 0%, #2d72bc 100%);
+  border-image-slice: 1;
+  border-width: 3px;
 }
