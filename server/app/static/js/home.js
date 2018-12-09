@@ -1,4 +1,4 @@
-import { startActivity, finishActivity, getTodaysActivityGroups } from "./api.js?version=13"
+import { startActivity, finishActivity, getTodaysActivityGroups, getThisWeekActivityGroups } from "./api.js?version=17"
 import { showNotification } from "./notifications.js?version=1"
 const TIMER_STEP = 60
 
@@ -96,11 +96,12 @@ async function onActivityStart() {
       clearProgress.apply(this);
       showNotification("Good job!",
         `${this.expense.amount} minutes sucessfully invested into ${selectedActivityName}`);
-      let response = await getTodaysActivityGroups();
-      let expenses = JSON.parse(response.expense_groups);
-      if(expenses && expenses.length > 0) {
-        this.expenseGroups = expenses.map(populateGroupedExpansesWithSkillsData);
-      }
+      let responseTodays = await getTodaysActivityGroups();
+      let expensesTodays = JSON.parse(responseTodays.expense_groups);
+      let responseCurrentWeek = await getThisWeekActivityGroups();
+      let expensesCurrentWeek = JSON.parse(responseCurrentWeek.expense_groups);
+      this.expenseGroups = expensesTodays.map(populateGroupedExpansesWithSkillsData);
+      this.expenseThisWeekGroups = expensesCurrentWeek.map(populateGroupedExpansesWithSkillsData);
     }
   }, 1000)
 }

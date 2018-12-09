@@ -29,13 +29,30 @@ export function finishActivity(expenseId) {
   .catch(error => console.error('Error:', error))
 }
 
-export function getTodaysActivityGroups(
-    // today
-    start_date = new Date().toISOString().substr(0,10),
-    // tomorrow
-    end_date = new Date(new Date().setDate((new Date().getDate() + 1))).toISOString().substring(0,10)
-  ) {
-  return fetch(`/api/expense/groups/${start_date}/${end_date}`, {
+export function getTodaysActivityGroups() {
+  // today
+  let startDate = new Date().toISOString().substr(0,10);
+  // tomorrow
+  let endDate = new Date(new Date().setDate((new Date().getDate() + 1))).toISOString().substring(0,10);
+
+  return fetch(`/api/expense/groups/${startDate}/${endDate}`, {
+    method: 'GET',
+  })
+  .then(res => res.json())
+  .then(response => response)
+  .catch(error => console.error('Error:', error))
+}
+
+export function getThisWeekActivityGroups() {
+  let currentDate = new Date(); // get current date
+  let first = currentDate.getDate() - currentDate.getDay(); // First day is the day of the month - the day of the week
+  let last = first + 6; // last day is the first day + 6
+  //first day of the week
+  let startDate = new Date(currentDate.setDate(first)).toISOString().substring(0,10);
+  //last day of the week
+  let endDate = new Date(currentDate.setDate(last)).toISOString().substring(0,10);
+
+  return fetch(`/api/expense/groups/${startDate}/${endDate}`, {
     method: 'GET',
   })
   .then(res => res.json())
