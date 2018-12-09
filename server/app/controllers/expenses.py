@@ -22,10 +22,30 @@ def expense_create():
                 del data['id']
             new_expense = Expense(**data)
             new_expense.started_at = datetime.strptime(data.get('started_at'), '%Y-%m-%dT%H:%M:%S')
+            if new_expense.finished_at is not None:
+                new_expense.finished_at = datetime.strptime(data.get('finished_at'), '%Y-%m-%dT%H:%M:%S')
             new_expense.save()
             return jsonify({ 'ok': True, 'expense': new_expense }), 200
         else:
             return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
+
+@app.route('/api/expense/create_from_form', methods=['POST'])
+@login_required
+def expense_create_from_form():
+    data = request.form
+    if request.method == 'POST':
+        if data.get('skill', None) is not None and request.form is not None:
+            if data.get('id', None) is not None:
+                del data['id']
+            new_expense = Expense(**data)
+            started_at = "{0}T{1}".format(data.get('date'), data.get('started_at'))
+            finished_at = "{0}T{1}".format(data.get('date'), data.get('finished_at'))
+            new_expense.started_at = datetime.strptime(started_at, '%Y-%m-%dT%H:%M')
+            new_expense.finished_at = datetime.strptime(finished_at, '%Y-%m-%dT%H:%M')
+            new_expense.save()
+            return redirect(url_for('time_log'))
+        else:
+            return redirect(url_for('time_log'))
 
 @app.route('/api/expense/all', methods=['GET'])
 @login_required
