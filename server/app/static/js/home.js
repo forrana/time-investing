@@ -1,116 +1,97 @@
-import { startActivity, finishActivity, getTodaysActivityGroups, getThisWeekActivityGroups } from "./api.js?version=17"
+import { startActivity, finishActivity, getTodaysActivityGroups, getThisWeekActivityGroups, getPreviousWeekActivityGroups } from "./api.js?version=28"
 import { showNotification } from "./notifications.js?version=1"
 const TIMER_STEP = 60
 
 
 if(document.querySelector("#home")) {
-
-  function getSkillById(skillId) {
-    return activeSkills.find(
-      ({_id}) => _id.$oid == skillId
-    )
-  }
-
-  function populateGroupedExpansesWithSkillsData(group) {
-    const skill = getSkillById(group._id);
-    if(skill) {
-      group = {
-        ...group,
-        name: skill.name,
-        target: skill.target_day,
-        color: skill.color || "#000000" };
-      group.achievedTarget = group.total * 100 / (group.target * 7); //day's target to week
-    }
-    return group;
-  }
-
   // Data revieved from server through global vars
-  const groupedBySkillExpansesJson = JSON.parse(groupedBySkillExpenses);
-  const groupedExpansesCurrentWeekJson = JSON.parse(groupedExpensesCurrentWeek);
-  const groupedExpansesPreviousWeekJson = JSON.parse(groupedExpensesPreviousWeek);
-  const defaultTime = defaultTimeFlask || 0;
+  (async function() {
+    const defaultTime = defaultTimeFlask || 0;
 
-  const groupedExpansesWSkillData = groupedBySkillExpansesJson.map(populateGroupedExpansesWithSkillsData);
-  const groupedExpansesCurrentWeekWSkillData = groupedExpansesCurrentWeekJson.map(populateGroupedExpansesWithSkillsData);
-  const groupedExpansesPreviousWeekWSkillData = groupedExpansesPreviousWeekJson.map(populateGroupedExpansesWithSkillsData);
+    const groupedExpansesWSkillData = await getTodaysActivityGroups();
+    const groupedExpansesCurrentWeekWSkillData = await getThisWeekActivityGroups();
+    const groupedExpansesPreviousWeekWSkillData = await getPreviousWeekActivityGroups();
 
-new Vue({
-  el: '#home',
-  data: {
-    isActivityStarted: false,
-    timerProgress: 0,
-    timePassedSec: 0,
-    activityTimer: null,
-    expense: {
-      skill: '',
-      amount: defaultTime
-    },
-    expenseGroups: groupedExpansesWSkillData,
-    expenseThisWeekGroups: groupedExpansesCurrentWeekWSkillData,
-    expensePreviousWeekGroups: groupedExpansesPreviousWeekWSkillData
-  },
-  methods: {
-    onActivityStart,
-    onActivityStop,
-    groupAchievedInPercentsWeek: function(group) {
-      return group.total * 100 / (group.target*7);
-    },
-    groupAchievedInPercentsDay: function(group) {
-      return group.total * 100 / group.target;
-    },
-    groupeAchievedInProportionDay: function(group, total) {
-      return group.total * 100 / total;
+    new Vue({
+      el: '#home',
+      data: {
+        isActivityStarted: false,
+        timerProgress: 0,
+        timePassedSec: 0,
+        activityTimer: null,
+        expense: {
+          skill: '',
+          amount: defaultTime
+        },
+        expenseGroups: groupedExpansesWSkillData,
+        expenseThisWeekGroups: groupedExpansesCurrentWeekWSkillData,
+        expensePreviousWeekGroups: groupedExpansesPreviousWeekWSkillData
+      },
+      methods: {
+        onActivityStart,
+        onActivityStop,
+        groupAchievedInPercentsWeek: function(group) {
+          return group.total * 100 / (group.target*7);
+        },
+        groupAchievedInPercentsDay: function(group) {
+          return group.total * 100 / group.target;
+        },
+        groupeAchievedInProportionDay: function(group, total) {
+          return group.total * 100 / total;
+        }
+      },
+      computed: {
+        totalyInvestedToday: function () {
+          return this.expenseGroups.reduce( (accumulator, {total}) => accumulator += total || 0, 0);
+        },
+        totalyInvestedThisWeek: function () {
+          return this.expenseThisWeekGroups.reduce( (accumulator, {total}) => accumulator += total || 0, 0);
+        },
+        totalyInvestedPrviousWeek: function () {
+          return this.expensePreviousWeekGroups.reduce( (accumulator, {total}) => accumulator += total || 0, 0);
+        },
+        timeProgressBarText: function () {
+          if(!this.isActivityStarted) return "";
+          return `${this.timerProgress}/${this.expense.amount * 60} seconds`;
+        },
+        timerProgressInPercents: function () {
+          if(!this.isActivityStarted) return 0;
+          const percentsOfTimePerSecond = 100/(+this.expense.amount * 60);
+          return this.timerProgress*percentsOfTimePerSecond;
+        },
+      }
+    })
+
+    function clearProgress() {
+      this.isActivityStarted = false;
+      this.timerProgress = 0;
+      clearInterval(this.activityTimer);
     }
-  },
-  computed: {
-    totalyInvestedToday: function () {
-      return this.expenseGroups.reduce( (accumulator, {total}) => accumulator += total || 0, 0);
-    },
-    timeProgressBarText: function () {
-      if(!this.isActivityStarted) return "";
-      return `${this.timerProgress}/${this.expense.amount * 60} seconds`;
-    },
-    timerProgressInPercents: function () {
-      if(!this.isActivityStarted) return 0;
-      const percentsOfTimePerSecond = 100/(+this.expense.amount * 60);
-      return this.timerProgress*percentsOfTimePerSecond;
-    },
-  }
-})
 
-function clearProgress() {
-  this.isActivityStarted = false;
-  this.timerProgress = 0;
-  clearInterval(this.activityTimer);
-}
-
-async function onActivityStart() {
-  const result = await startActivity(this.expense);
-  this.expense.id= result;
-  this.isActivityStarted = true;
-  this.activityTimer = setInterval(async () => {
-    this.timerProgress += TIMER_STEP;
-    if(this.timerProgress >= this.expense.amount * 60) {
-      await finishActivity(this.expense.id);
-      const selectedActivityName = getSkillById(this.expense.skill).name;
-      clearProgress.apply(this);
-      showNotification("Good job!",
-        `${this.expense.amount} minutes sucessfully invested into ${selectedActivityName}`);
-      let responseTodays = await getTodaysActivityGroups();
-      let expensesTodays = JSON.parse(responseTodays.expense_groups);
-      let responseCurrentWeek = await getThisWeekActivityGroups();
-      let expensesCurrentWeek = JSON.parse(responseCurrentWeek.expense_groups);
-      this.expenseGroups = expensesTodays.map(populateGroupedExpansesWithSkillsData);
-      this.expenseThisWeekGroups = expensesCurrentWeek.map(populateGroupedExpansesWithSkillsData);
+    async function onActivityStart() {
+      const result = await startActivity(this.expense);
+      this.expense.id= result;
+      this.isActivityStarted = true;
+      this.activityTimer = setInterval(async () => {
+        this.timerProgress += TIMER_STEP;
+        if(this.timerProgress >= this.expense.amount * 60) {
+          await finishActivity(this.expense.id);
+          const selectedActivityName = getSkillById(this.expense.skill).name;
+          clearProgress.apply(this);
+          showNotification("Good job!",
+            `${this.expense.amount} minutes sucessfully invested into ${selectedActivityName}`);
+          this.expenseGroups = await getTodaysActivityGroups();
+          this.expenseThisWeekGroups = await getThisWeekActivityGroups();
+        }
+      }, 1000)
     }
-  }, 1000)
-}
 
-function onActivityStop() {
-  if(window.confirm("If you stop activity progress will be lost. (Sorry, there isn't pause - you can't pause the time.)")) {
-    clearProgress.apply(this);
-  }
-}
+    function onActivityStop() {
+      if(window.confirm("If you stop activity progress will be lost. (Sorry, there isn't pause - you can't pause the time.)")) {
+        clearProgress.apply(this);
+      }
+    }
+  })();
 // Day time countdown
 (function() {
   const timeLeftElement = document.querySelector("#expenses-list-time-left")

@@ -2,9 +2,6 @@
 <link rel="stylesheet" href="[[ url_for('static', filename='home.css') ]]">
 <script>
   const activeSkills = [[skills|tojson|safe]];
-  const groupedBySkillExpenses = [[expenses|tojson|safe if expenses else []]];
-  const groupedExpensesCurrentWeek = [[current_week_expenses|tojson|safe if expenses else []]];
-  const groupedExpensesPreviousWeek = [[previous_week_expenses|tojson|safe if expenses else []]];
   const defaultTimeFlask = [[default_time | int]]
 </script>
   <main id="home">
@@ -96,13 +93,13 @@
             v-for="expense in expenseThisWeekGroups"
             class="progress-bar"
             role="progressbar"
-            v-bind:style="{width: groupeAchievedInProportionDay(expense, totalyInvestedToday) + '%', backgroundColor: expense.color}"
-            v-bind:aria-valuenow="groupeAchievedInProportionDay(expense, totalyInvestedToday)"
+            v-bind:style="{width: groupeAchievedInProportionDay(expense, totalyInvestedThisWeek) + '%', backgroundColor: expense.color}"
+            v-bind:aria-valuenow="groupeAchievedInProportionDay(expense, totalyInvestedThisWeek)"
             aria-valuemin="0"
             aria-valuemax="100">
           </div>
           <span class="progress-bar-title">
-            {{totalyInvestedToday}} minutes
+            {{totalyInvestedThisWeek}} minutes
           </span>
       </div>
 
@@ -124,39 +121,40 @@
       </div>
     </section>
   </section>
-
-  <section v-if="expensePreviousWeekGroups.length">
-    <h2 class="text-center text-uppercase"> Previous Week progress </h2>
-    <div class="progress">
-        <div
-          v-for="expense in expenseThisWeekGroups"
-          class="progress-bar"
-          role="progressbar"
-          v-bind:style="{width: groupeAchievedInProportionDay(expense, totalyInvestedToday) + '%', backgroundColor: expense.color}"
-          v-bind:aria-valuenow="groupeAchievedInProportionDay(expense, totalyInvestedToday)"
-          aria-valuemin="0"
-          aria-valuemax="100">
-        </div>
-        <span class="progress-bar-title">
-          {{totalyInvestedToday}} minutes
-        </span>
-    </div>
-    <div v-for="expense in expensePreviousWeekGroups">
-      <h3>{{expense.name}}</h3>
+  <section class="statistics-block">
+    <section v-if="expensePreviousWeekGroups.length" class="card statistics-section">
+      <h2 class="text-center text-uppercase"> Previous Week progress </h2>
       <div class="progress">
-        <div
-          class="progress-bar"
-          role="progressbar"
-          v-bind:style="{width: groupAchievedInPercentsWeek(expense) + '%', backgroundColor: expense.color}"
-          v-bind:aria-valuenow="groupAchievedInPercentsWeek(expense)"
-          aria-valuemin="0"
-          aria-valuemax="100">
-        </div>
-        <span class="progress-bar-title">
-          {{expense.total}}/{{Math.round(expense.target*7)}} minutes
-        </span>
+          <div
+            v-for="expense in expensePreviousWeekGroups"
+            class="progress-bar"
+            role="progressbar"
+            v-bind:style="{width: groupeAchievedInProportionDay(expense, totalyInvestedPrviousWeek) + '%', backgroundColor: expense.color}"
+            v-bind:aria-valuenow="groupeAchievedInProportionDay(expense, totalyInvestedPrviousWeek)"
+            aria-valuemin="0"
+            aria-valuemax="100">
+          </div>
+          <span class="progress-bar-title">
+            {{totalyInvestedPrviousWeek}} minutes
+          </span>
       </div>
-    </div>
+      <div v-for="expense in expensePreviousWeekGroups">
+        <h3>{{expense.name}}</h3>
+        <div class="progress">
+          <div
+            class="progress-bar"
+            role="progressbar"
+            v-bind:style="{width: groupAchievedInPercentsWeek(expense) + '%', backgroundColor: expense.color}"
+            v-bind:aria-valuenow="groupAchievedInPercentsWeek(expense)"
+            aria-valuemin="0"
+            aria-valuemax="100">
+          </div>
+          <span class="progress-bar-title">
+            {{expense.total}}/{{Math.round(expense.target*7)}} minutes
+          </span>
+        </div>
+      </div>
+    </section>
   </section>
   </main>
 {% endblock %}
