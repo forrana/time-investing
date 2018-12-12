@@ -29,6 +29,23 @@ export function finishActivity(expenseId) {
   .catch(error => console.error('Error:', error))
 }
 
+function getTimeLogGroups(startDate, endDate) {
+  return fetch(`/api/expense/date_groups/${startDate}/${endDate}/`, {
+    method: 'GET',
+  })
+  .then(res => res.json())
+  .then(response => JSON.parse(response.expense_groups))
+  .catch(error => console.error('Error:', error))
+}
+
+export function getThisMonthDateLogGroups() {
+  const today = moment();
+  const endDate = today.toISOString().substring(0,10);
+  const startDate = today.startOf('month').toISOString().substring(0,10);
+  return getTimeLogGroups(startDate, endDate);
+}
+
+
 function getSkillById(skillId) {
   return activeSkills.find(
     ({_id}) => _id.$oid == skillId
@@ -47,7 +64,6 @@ function populateGroupedExpansesWithSkillsData(group) {
   }
   return group;
 }
-
 
 function getActitivityGroups(startDate, endDate) {
   return fetch(`/api/expense/groups/${startDate}/${endDate}/`, {

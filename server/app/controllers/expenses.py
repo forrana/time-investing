@@ -97,3 +97,31 @@ def expense_groups(start_date_str, end_date_str):
             return jsonify({'ok': True, 'expense_groups': JSONEncoder().encode(list( expense_groups)) }), 200
         else:
             return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
+
+@app.route('/api/expense/date_groups/<start_date_str>/<end_date_str>/', methods=['GET'])
+@login_required
+def expense_date_groups(start_date_str, end_date_str):
+    if request.method == 'GET':
+        if start_date_str is not None:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+            if end_date_str is not None:
+                end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+            else:
+                end_date = start_date + timedelta(days=1)
+            expense_groups = Expense.objects(owner=current_user.id, finished_at__ne='', date__gte=start_date, date__lt=end_date ).aggregate(
+                  {
+                    "$group": {
+                        "_id": {
+                            "skill" : "$skill",
+                            "year" : { "$year" : "$date" },
+                            "month" : { "$month" : "$date" },
+                            "day" : { "$dayOfMonth" : "$date" },
+                        },
+                        "total": { "$sum": "$amount" },
+                        "name": { "$first": "$skill_name"}
+                    }
+                  }
+                )
+            return jsonify({'ok': True, 'expense_groups': JSONEncoder().encode(list( expense_groups)) }), 200
+        else:
+            return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400

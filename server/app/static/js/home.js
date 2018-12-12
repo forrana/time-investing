@@ -1,4 +1,11 @@
-import { startActivity, finishActivity, getTodaysActivityGroups, getThisWeekActivityGroups, getPreviousWeekActivityGroups } from "./api.js?version=28"
+import {
+  startActivity,
+  finishActivity,
+  getTodaysActivityGroups,
+  getThisWeekActivityGroups,
+  getPreviousWeekActivityGroups,
+  getThisMonthDateLogGroups,
+} from "./api.js?version=36"
 import { showNotification } from "./notifications.js?version=1"
 const TIMER_STEP = 60
 
@@ -11,6 +18,8 @@ if(document.querySelector("#home")) {
     const groupedExpansesWSkillData = await getTodaysActivityGroups();
     const groupedExpansesCurrentWeekWSkillData = await getThisWeekActivityGroups();
     const groupedExpansesPreviousWeekWSkillData = await getPreviousWeekActivityGroups();
+    const groupedByDateThisMonthExpenses = await getThisMonthDateLogGroups();
+    console.log(groupedByDateThisMonthExpenses)
 
     new Vue({
       el: '#home',
