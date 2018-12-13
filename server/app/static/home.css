@@ -38,3 +38,13 @@
   border-image-slice: 1;
   border-width: 3px;
 }
+
+.month-block {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr)
+}
+
+.month-block-element {
+  border: 1px solid black;
+  width: 100%;
+}

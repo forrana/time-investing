@@ -3,7 +3,7 @@ export function startActivity(expense) {
     method: 'POST',
     body: JSON.stringify( {
       ...expense,
-      started_at: new Date().toISOString().substr(0,19)
+      started_at: moment().toISOString().substr(0,19)
     } ), // data can be `string` or {object}!
     headers:{
       'Content-Type': 'application/json'
@@ -18,7 +18,7 @@ export function finishActivity(expenseId) {
   return fetch(`/api/expense/update/${expenseId}`, {
     method: 'POST',
     body: JSON.stringify( {
-      finished_at: new Date().toISOString().substr(0,19)
+      finished_at: moment().toISOString().substr(0,19)
     } ), // data can be `string` or {object}!
     headers:{
       'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ export function getThisMonthDateLogGroups() {
 }
 
 
-function getSkillById(skillId) {
+export function getSkillById(skillId) {
   return activeSkills.find(
     ({_id}) => _id.$oid == skillId
   )

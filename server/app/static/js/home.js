@@ -5,7 +5,8 @@ import {
   getThisWeekActivityGroups,
   getPreviousWeekActivityGroups,
   getThisMonthDateLogGroups,
-} from "./api.js?version=36"
+  getSkillById
+} from "./api.js?version=38"
 import { showNotification } from "./notifications.js?version=1"
 const TIMER_STEP = 60
 
@@ -28,6 +29,9 @@ if(document.querySelector("#home")) {
         timerProgress: 0,
         timePassedSec: 0,
         activityTimer: null,
+        currentDayNumber: moment().date(),
+        currentMonthNumber: moment().month(),
+        currentYearNumber: moment().year(),
         expense: {
           skill: '',
           amount: defaultTime
@@ -47,6 +51,9 @@ if(document.querySelector("#home")) {
         },
         groupeAchievedInProportionDay: function(group, total) {
           return group.total * 100 / total;
+        },
+        getTodaysExpenses: function(dayNumber) {
+          return groupedByDateThisMonthExpenses.filter(({_id}) => _id.day == dayNumber);
         }
       },
       computed: {
