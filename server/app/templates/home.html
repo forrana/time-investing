@@ -159,8 +159,10 @@
   <section class="month-block">
     <span v-for="dayNumber in currentDayNumber" class="month-block-element">
       {{dayNumber}}
-      <span v-for="expense in getTodaysExpenses(dayNumber)">
-        {{expense.total}}
+      <span
+        v-for="expense in getTodaysExpenses(dayNumber)"
+        v-bind:style="{ backgroundColor: expense.color}">
+          {{expense.total}}
       </span>
     </span>
   </section>

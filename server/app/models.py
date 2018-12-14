@@ -71,7 +71,7 @@ class Skill(TimeStampsOwnerModel, SafeDeletionModel):
 class Expense(TimeStampsOwnerModel):
     skill_name = db.StringField()
     amount = db.DecimalField()
-    date = db.DateTimeField(default=datetime.now())
+    date = db.DateTimeField(default=datetime.now)
     time = db.StringField()
     place = db.StringField()
     skill = db.ReferenceField(Skill)

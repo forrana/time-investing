@@ -6,7 +6,7 @@ import {
   getPreviousWeekActivityGroups,
   getThisMonthDateLogGroups,
   getSkillById
-} from "./api.js?version=38"
+} from "./api.js?version=45"
 import { showNotification } from "./notifications.js?version=1"
 const TIMER_STEP = 60
 

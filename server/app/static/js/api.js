@@ -35,6 +35,7 @@ function getTimeLogGroups(startDate, endDate) {
   })
   .then(res => res.json())
   .then(response => JSON.parse(response.expense_groups))
+  .then(expenseGroups => expenseGroups.map(populateGroupedExpansesWithSkillsData))
   .catch(error => console.error('Error:', error))
 }
 
@@ -47,8 +48,9 @@ export function getThisMonthDateLogGroups() {
 
 
 export function getSkillById(skillId) {
+  const currentId =  typeof skillId === "object" ? skillId.skill : skillId
   return activeSkills.find(
-    ({_id}) => _id.$oid == skillId
+    ({_id}) => _id.$oid == currentId
   )
 }
 
