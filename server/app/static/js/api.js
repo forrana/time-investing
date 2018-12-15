@@ -41,8 +41,8 @@ function getTimeLogGroups(startDate, endDate) {
 
 export function getThisMonthDateLogGroups() {
   const today = moment();
-  const endDate = today.toISOString().substring(0,10);
   const startDate = today.startOf('month').toISOString().substring(0,10);
+  const endDate = today.endOf('month').toISOString().substring(0,10);
   return getTimeLogGroups(startDate, endDate);
 }
 

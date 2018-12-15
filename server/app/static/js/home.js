@@ -6,7 +6,7 @@ import {
   getPreviousWeekActivityGroups,
   getThisMonthDateLogGroups,
   getSkillById
-} from "./api.js?version=45"
+} from "./api.js?version=46"
 import { showNotification } from "./notifications.js?version=1"
 const TIMER_STEP = 60
 
@@ -20,7 +20,6 @@ if(document.querySelector("#home")) {
     const groupedExpansesCurrentWeekWSkillData = await getThisWeekActivityGroups();
     const groupedExpansesPreviousWeekWSkillData = await getPreviousWeekActivityGroups();
     const groupedByDateThisMonthExpenses = await getThisMonthDateLogGroups();
-    console.log(groupedByDateThisMonthExpenses)
 
     new Vue({
       el: '#home',
@@ -53,8 +52,29 @@ if(document.querySelector("#home")) {
           return group.total * 100 / total;
         },
         getTodaysExpenses: function(dayNumber) {
-          return groupedByDateThisMonthExpenses.filter(({_id}) => _id.day == dayNumber);
-        }
+          return groupedByDateThisMonthExpenses
+            .filter(({_id}) => _id.day == dayNumber)
+            .sort((expenseA, expenseB) => {
+                if(expenseA.color < expenseB.color) return -1;
+                if(expenseA.color > expenseB.color) return 1;
+                return 0;
+              })
+        },
+        getTodaysTotal: function(dayNumber) {
+          return groupedByDateThisMonthExpenses
+            .filter(({_id}) => _id.day == dayNumber)
+            .reduce((accumulator, expense) => accumulator + expense.total, 0)
+        },
+        getThisMonthTotal: function(dayNumber) {
+          return groupedByDateThisMonthExpenses
+            .reduce((accumulator, expense) => accumulator + expense.total, 0)
+        },
+        getTodaysTotalPercentage: function(dayNumber) {
+          return (1 + this.getTodaysTotal(dayNumber) / this.getThisMonthTotal(dayNumber))*100
+        },
+        getTodaysExpensePercentage: function(dayNumber, expense) {
+          return (expense.total / this.getTodaysTotal(dayNumber)) * 100
+        },
       },
       computed: {
         totalyInvestedToday: function () {

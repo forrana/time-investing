@@ -157,14 +157,15 @@
     </section>
   </section>
   <section class="month-block">
-    <span v-for="dayNumber in currentDayNumber" class="month-block-element">
-      {{dayNumber}}
-      <span
-        v-for="expense in getTodaysExpenses(dayNumber)"
-        v-bind:style="{ backgroundColor: expense.color}">
-          {{expense.total}}
-      </span>
-    </span>
+    <h2 class="text-center text-uppercase"> Current month progress </h2>
+    <section class="month-block-body">
+      <div v-for="dayNumber in 31" class="month-block-element" v-bind:style="{ width: getTodaysTotalPercentage(dayNumber) + '%' }">
+        <div
+          v-for="expense in getTodaysExpenses(dayNumber)"
+          v-bind:style="{ backgroundColor: expense.color, minHeight: getTodaysExpensePercentage(dayNumber, expense)+'%' }">
+        </div>
+      </div>
+    </section>
   </section>
   </main>
 {% endblock %}
