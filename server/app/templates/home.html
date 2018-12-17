@@ -9,6 +9,16 @@
     <mark id="expenses-list-time-left"></mark><mark>minutes</mark> today to invest
   </h1>
   <div>
+    <section class="skill-tiles">
+      {% for skill in skills %}
+        <span class="skill-tile">
+          <input type="radio" value="[[skill.id]]" id="[[skill.id]]" name="skill" />
+          <label for="[[skill.id]]" style="background-color:[[skill.color]]">
+            [[skill.name]]
+          </label>
+        </span>
+      {% endfor %}
+    </section>
     <div class="input-group mb-3">
       <select class="form-control" name="skill" v-model="expense.skill" :disabled="isActivityStarted">
           <option value="" disabled> Chose an activity! </option>
