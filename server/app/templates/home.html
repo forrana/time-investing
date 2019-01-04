@@ -8,6 +8,7 @@
   <h1 class="home-main-header">You still have
     <mark id="expenses-list-time-left"></mark><mark>minutes</mark> today to invest
   </h1>
+  {% if skills|length %}
   <div>
     <div class="input-group mb-3">
       <section class="skill-tiles">
@@ -55,9 +56,15 @@
       {{timeProgressBarText}}
     </span>
   </div>
+  {% else %}
+    <h2 class="text text-center">
+      There are no skills yet. Please follow this <a href=[[ url_for('settings') ]]>link</a>
+      to add skills to practice.
+    </h2>
+  {% endif %}
 
   <section class="statistics-block">
-    <section v-if="expenseGroups.length" class="card statistics-section">
+    <section class="card statistics-section">
       <h2 class="text-center text-uppercase"> Todays progress </h2>
       <div class="progress">
           <div
@@ -92,7 +99,7 @@
       </div>
     </section>
 
-    <section v-if="expenseThisWeekGroups.length" class="card statistics-section">
+    <section class="card statistics-section">
       <h2 class="text-center text-uppercase"> Week progress </h2>
       <div class="progress">
           <div
@@ -128,7 +135,7 @@
     </section>
   </section>
   <section class="statistics-block">
-    <section v-if="expensePreviousWeekGroups.length" class="card statistics-section">
+    <section class="card statistics-section">
       <h2 class="text-center text-uppercase"> Previous Week progress </h2>
       <div class="progress">
           <div
