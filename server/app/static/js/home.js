@@ -37,7 +37,8 @@ if(document.querySelector("#home")) {
         },
         expenseGroups: groupedExpansesWSkillData,
         expenseThisWeekGroups: groupedExpansesCurrentWeekWSkillData,
-        expensePreviousWeekGroups: groupedExpansesPreviousWeekWSkillData
+        expensePreviousWeekGroups: groupedExpansesPreviousWeekWSkillData,
+        expenseThisMonthGroups: groupedByDateThisMonthExpenses,
       },
       methods: {
         onActivityStart,
@@ -52,7 +53,7 @@ if(document.querySelector("#home")) {
           return group.total * 100 / total;
         },
         getTodaysExpenses: function(dayNumber) {
-          return groupedByDateThisMonthExpenses
+          return this.expenseThisMonthGroups
             .filter(({_id}) => _id.day == dayNumber)
             .sort((expenseA, expenseB) => {
                 if(expenseA.color < expenseB.color) return -1;
@@ -61,12 +62,12 @@ if(document.querySelector("#home")) {
               })
         },
         getTodaysTotal: function(dayNumber) {
-          return groupedByDateThisMonthExpenses
+          return this.expenseThisMonthGroups
             .filter(({_id}) => _id.day == dayNumber)
             .reduce((accumulator, expense) => accumulator + expense.total, 0)
         },
         getThisMonthTotal: function(dayNumber) {
-          return groupedByDateThisMonthExpenses
+          return this.expenseThisMonthGroups
             .reduce((accumulator, expense) => accumulator + expense.total, 0)
         },
         getTodaysTotalPercentage: function(dayNumber) {
@@ -105,19 +106,24 @@ if(document.querySelector("#home")) {
     }
 
     async function onActivityStart() {
+      const onActivityEnd = async () => {
+        await finishActivity(this.expense.id);
+        const selectedActivityName = getSkillById(this.expense.skill).name;
+        clearProgress.apply(this);
+        showNotification("Good job!",
+          `${this.expense.amount} minutes sucessfully invested into ${selectedActivityName}`);
+        this.expenseGroups = await getTodaysActivityGroups();
+        this.expenseThisWeekGroups = await getThisWeekActivityGroups();
+        this.expenseThisMonthGroups = await getThisMonthDateLogGroups();
+      }
+
       const result = await startActivity(this.expense);
       this.expense.id= result;
       this.isActivityStarted = true;
       this.activityTimer = setInterval(async () => {
         this.timerProgress += TIMER_STEP;
         if(this.timerProgress >= this.expense.amount * 60) {
-          await finishActivity(this.expense.id);
-          const selectedActivityName = getSkillById(this.expense.skill).name;
-          clearProgress.apply(this);
-          showNotification("Good job!",
-            `${this.expense.amount} minutes sucessfully invested into ${selectedActivityName}`);
-          this.expenseGroups = await getTodaysActivityGroups();
-          this.expenseThisWeekGroups = await getThisWeekActivityGroups();
+          onActivityEnd();
         }
       }, 1000)
     }
