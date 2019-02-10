@@ -1,5 +1,6 @@
 ''' controller and routes for skills '''
 import os
+from bson import ObjectId
 from flask import request, jsonify, url_for, redirect
 from app import app, Skill, login_required, current_user
 from datetime import datetime
@@ -41,7 +42,7 @@ def skill_update():
     form = data.form.copy()
     if request.method == 'POST':
         if data.args['id'] != None:
-            print(data.args)
+            form['attributes'] = map(lambda attr: ObjectId(attr), form.getlist('attributes'))
             Skill.objects(id=data.args['id']).update_one(**form)
             return redirect(url_for('settings'))
         else:

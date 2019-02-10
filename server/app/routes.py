@@ -17,7 +17,7 @@ def not_found(error):
 @app.route('/')
 @login_required
 def home():
-    skills = Skill.objects(owner=current_user.id).order_by("name")
+    skills = Skill.objects(owner=current_user.id, deleted_at='').order_by("name")
     return render_template_string("""
         {% extends "flask_user_layout.html" %}
         {% block content %}

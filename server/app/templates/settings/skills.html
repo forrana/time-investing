@@ -1,15 +1,16 @@
-<h2>Skills</h2>
+<h2>Activities</h2>
 <table class="table table-striped table-bordered">
   <form class="" action="/api/skill/create" method="post">
   <tr>
     <td>
-      <input class="form-control" required name="name" title="enter skill name" placeholder="Name"/>
+      <input class="form-control" required name="name" title="Activity name" placeholder="Activity name"/>
     </td>
     <td>
       <input type="number" required class="form-control" name="target_day" title="Enter target amount minutes per day" placeholder="Minutes per day"/>
     </td>
     <td>
-      <select class="form-control" required name="attributes" multiple>
+      <select class="form-control" required name="attributes">
+          <option>Sellect a skill</option>
         {% for attribute in attributes %}
           <option value="[[attribute.id]]">[[attribute.name]]</option>
         {% endfor %}
@@ -19,7 +20,7 @@
       <input type="color" name="color" value="#ff0000">
     </td>
     <td>
-      <input class="btn btn-default" type="submit"/>
+      <button class="btn btn-primary" type="submit">Add</button>
     </td>
     <td/>
   </tr>
@@ -34,7 +35,16 @@
       <input type="number" required class="form-control" name="target_day" title="Enter target amount minutes per day" placeholder="Minutes per day" value="[[skill.target_day]]"/>
     </td>
     <td>
-      [[skill.stringify_attributes()]]
+      <select class="form-control" required name="attributes">
+          <option>Sellect a skill</option>
+        {% for attribute in attributes %}
+          {% if attribute.id == (skill.attributes|length > 0 and skill.attributes[0].id) %}
+            <option value="[[attribute.id]]" selected="selected">[[attribute.name]]</option>
+          {% else %}
+            <option value="[[attribute.id]]">[[attribute.name]]</option>
+          {% endif %}
+        {% endfor %}
+      </select>
     </td>
     <td>
       <input type="color" name="color" value="[[skill.color]]">
