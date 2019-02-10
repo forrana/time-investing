@@ -10,7 +10,7 @@
     </td>
     <td>
       <select class="form-control" required name="attributes">
-          <option>Sellect a skill</option>
+          <option value="">Sellect a skill</option>
         {% for attribute in attributes %}
           <option value="[[attribute.id]]">[[attribute.name]]</option>
         {% endfor %}
@@ -36,7 +36,6 @@
     </td>
     <td>
       <select class="form-control" required name="attributes">
-          <option>Sellect a skill</option>
         {% for attribute in attributes %}
           {% if attribute.id == (skill.attributes|length > 0 and skill.attributes[0].id) %}
             <option value="[[attribute.id]]" selected="selected">[[attribute.name]]</option>
