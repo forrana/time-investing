@@ -1,0 +1,56 @@
+<section class="statistics-block">
+  <section class="card statistics-section">
+    <h2 class="text-center text-uppercase"> Todays progress </h2>
+    <progressbar-combined
+      :expenses="expenseGroups"
+      :local-total="totalyInvestedToday"
+    >
+    </progressbar-combined>
+    <div v-for="expense in expenseGroups">
+      <h3>{{expense.name}}</h3>
+      <progress-bar
+        :color="expense.color"
+        :percents="groupAchievedInPercentsDay(expense)"
+        :minutes-total="expense.total"
+        :minutes-target="Math.round(expense.target)"
+      />
+    </div>
+  </section>
+
+  <section class="card statistics-section">
+    <h2 class="text-center text-uppercase"> Week progress </h2>
+    <progressbar-combined
+      :expenses="expenseThisWeekGroups"
+      :local-total="totalyInvestedThisWeek"
+    >
+    </progressbar-combined>
+    <div v-for="expense in expenseThisWeekGroups">
+      <h3>{{expense.name}}</h3>
+      <progress-bar
+        :color="expense.color"
+        :percents="groupAchievedInPercentsWeek(expense)"
+        :minutes-total="expense.total"
+        :minutes-target="Math.round(expense.target*7)"
+      />
+    </div>
+  </section>
+</section>
+<section class="statistics-block">
+  <section class="card statistics-section">
+    <h2 class="text-center text-uppercase"> Previous Week progress </h2>
+    <progressbar-combined
+      :expenses="expensePreviousWeekGroups"
+      :local-total="totalyInvestedPrviousWeek"
+    >
+    </progressbar-combined>
+    <div v-for="expense in expensePreviousWeekGroups">
+      <h3>{{expense.name}}</h3>
+      <progress-bar
+        :color="expense.color"
+        :percents="groupAchievedInPercentsWeek(expense)"
+        :minutes-total="expense.total"
+        :minutes-target="Math.round(expense.target*7)"
+      />
+    </div>
+  </section>
+</section>

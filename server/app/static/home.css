@@ -8,6 +8,7 @@
 
 .skill-tiles {
   display: flex;
+  flex-wrap: nowrap;
 }
 
 .skill-tiles input{
@@ -33,17 +34,17 @@
 }
 
 .skill-tiles label span {
+  color: #00FF00;
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   text-align: center;
-  mix-blend-mode: exclusion;
+  mix-blend-mode: difference;
   /* background: inherit;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent; */
-  filter: invert(1);
 }
 
 .skill-tiles input[type="radio"] {
@@ -52,7 +53,8 @@
 }
 
 .skill-tile {
-  mix-blend-mode: exclusion;
+  flex: 50%;
+  mix-blend-mode: difference;
   font-weight: bold;
   width:5em;
   height:3em;
@@ -65,8 +67,8 @@
 
 .progress .progress-bar-title {
   width: 100%;
-  mix-blend-mode: exclusion;
-  color: whitesmoke;
+  mix-blend-mode: difference;
+  color: #00FF00;
   font-weight: 700;
   font-size: calc(var(--progress-bar-height) - 0.85em);
   height: var(--progress-bar-height);

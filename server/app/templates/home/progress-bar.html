@@ -1,0 +1,14 @@
+<h2> Current progress </h2>
+<div class="progress">
+  <div
+    class="progress-bar progress-bar-striped progress-bar-animated"
+    role="progressbar"
+    v-bind:style="{width: timerProgressInPercents + '%'}"
+    v-bind:aria-valuenow="timerProgressInPercents"
+    aria-valuemin="0"
+    aria-valuemax="100">
+  </div>
+  <span class="progress-bar-title">
+    {{timeProgressBarText}}
+  </span>
+</div>

@@ -1,0 +1,46 @@
+{% block content %}
+<link rel="stylesheet" href="[[ url_for('static', filename='home.css') ]]">
+<script>
+  const activeSkills = [[skills|tojson|safe]];
+  const defaultTimeFlask = [[default_time|int]]
+</script>
+  <main id="home">
+    <h1 class="home-main-header">You still have
+      <mark id="expenses-list-time-left"></mark><mark>minutes</mark> today to invest
+    </h1>
+    {% if skills|length %}
+    <div>
+      {% include 'home/skills-selector.html' %}
+      <div class="input-group mb-3">
+        <input type="range" name="points" min="0" max="150" step="15" v-model="expense.amount" :disabled="isActivityStarted">
+        <span>{{ expense.amount }} min</span>
+        <!-- <select class="form-control" v-model="expense.amount" :disabled="isActivityStarted">
+            <option value="0" disabled selected> Chose amount of time. </option>
+          {% for n in range(4) %}
+              <option value="[[15*(n + 1)]]">[[15*(n+1)]] minutes</option>
+          {% endfor %}
+        </select> -->
+        <button
+          class="btn btn-default input-group-append"
+          v-on:click="onActivityStart"
+          :disabled="!expense.skill || !expense.amount"
+          v-if="!isActivityStarted"
+          >Start!</button>
+        <button
+          class="btn btn-default input-group-append"
+          v-on:click="onActivityStop"
+          v-if="isActivityStarted"
+          >Stop!</button>
+      </div>
+    </div>
+    {% include 'home/progress-bar.html' %}
+    {% else %}
+      <h2 class="text text-center">
+        There are no activities yet. Please follow this <a href=[[ url_for('settings') ]]>link</a>
+        to add activities.
+      </h2>
+    {% endif %}
+    {% include 'home/dashboard.html' %}
+    {% include 'home/interval-diagram.html' %}
+  </main>
+{% endblock %}

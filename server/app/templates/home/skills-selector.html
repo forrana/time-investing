@@ -1,0 +1,13 @@
+<section class="skill-tiles">
+  {% for skill in skills %}
+    <span class="skill-tile">
+      <input type="radio" value="[[skill.id]]" id="[[skill.id]]" name="skill" v-model="expense.skill" :disabled="isActivityStarted"/>
+      <label for="[[skill.id]]" style="background-color:[[skill.color]]" title="[[skill.name]]">
+        <span>
+          [[skill.attributes[0].name]]:
+          [[skill.name]]
+        </span>
+      </label>
+    </span>
+  {% endfor %}
+</section>

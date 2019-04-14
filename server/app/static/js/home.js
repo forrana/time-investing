@@ -21,6 +21,50 @@ if(document.querySelector("#home")) {
     const groupedExpansesPreviousWeekWSkillData = await getPreviousWeekActivityGroups();
     const groupedByDateThisMonthExpenses = await getThisMonthDateLogGroups();
 
+    Vue.component('progress-bar', {
+      props: ['color', 'percents', 'minutesTotal', 'minutesTarget'],
+      template:`
+        <div class="progress">
+          <div
+            class="progress-bar"
+            role="progressbar"
+            v-bind:style="{width: percents + '%', backgroundColor: color}"
+            v-bind:aria-valuenow="percents"
+            aria-valuemin="0"
+            aria-valuemax="100">
+          </div>
+          <span class="progress-bar-title">
+            {{minutesTotal}}/{{minutesTarget}} minutes
+          </span>
+        </div>
+      `
+    })
+
+    Vue.component('progressbar-combined', {
+      props: ['expenses', 'localTotal'],
+      methods: {
+        groupeAchievedInProportion: function(group, total) {
+          return group.total * 100 / total;
+        },
+      },
+      template:`
+      <div class="progress">
+          <div
+            v-for="expense in expenses"
+            class="progress-bar"
+            role="progressbar"
+            v-bind:style="{width: groupeAchievedInProportion(expense, localTotal) + '%', backgroundColor: expense.color}"
+            v-bind:aria-valuenow="groupeAchievedInProportion(expense, localTotal)"
+            aria-valuemin="0"
+            aria-valuemax="100">
+          </div>
+          <span class="progress-bar-title">
+            {{localTotal}} minutes
+          </span>
+      </div>
+      `
+    })
+
     new Vue({
       el: '#home',
       data: {
@@ -49,7 +93,7 @@ if(document.querySelector("#home")) {
         groupAchievedInPercentsDay: function(group) {
           return group.total * 100 / group.target;
         },
-        groupeAchievedInProportionDay: function(group, total) {
+        groupeAchievedInProportion: function(group, total) {
           return group.total * 100 / total;
         },
         getTodaysExpenses: function(dayNumber) {
@@ -134,21 +178,33 @@ if(document.querySelector("#home")) {
       }
     }
   })();
+
 // Day time countdown
 (function() {
-  const timeLeftElement = document.querySelector("#expenses-list-time-left")
-  const currentUnixTime = new Date().getTime() / 1000;
-  const endOfTheCurrentDay = (new Date()).setHours(23,59,59,999)
-  const endOfTheCurrentDayUnixTime = endOfTheCurrentDay / 1000
+  const howManyMinutesLeftToday = () => {
+    const currentUnixTime = new Date().getTime() / 1000;
+    const endOfTheCurrentDay = (new Date()).setHours(23,59,59,999)
+    const endOfTheCurrentDayUnixTime = endOfTheCurrentDay / 1000
 
-  let minutesLeftInTheCurrentDay = (endOfTheCurrentDayUnixTime - currentUnixTime) / 60
-  minutesLeftInTheCurrentDay =  Math.round(minutesLeftInTheCurrentDay)
-  timeLeftElement.innerHTML = minutesLeftInTheCurrentDay
-  setInterval(() => {
+    const minutesLeftInTheCurrentDay = (endOfTheCurrentDayUnixTime - currentUnixTime) / 60
+    return Math.round(minutesLeftInTheCurrentDay)
+  }
+
+  const renderHowManyMinutesLeftToday = () => {
+    const timeLeftElement = document.querySelector("#expenses-list-time-left")
+    const minutesLeftInTheCurrentDay = howManyMinutesLeftToday();
     if(minutesLeftInTheCurrentDay > 0)
-      minutesLeftInTheCurrentDay--
+      timeLeftElement.innerHTML = minutesLeftInTheCurrentDay
     else location.reload();
-    timeLeftElement.innerHTML = minutesLeftInTheCurrentDay
-  }, 1000*60);
+  }
+
+  renderHowManyMinutesLeftToday();
+  setInterval(renderHowManyMinutesLeftToday, 1000*60);
+  document.addEventListener( 'visibilitychange' , () => {
+    if (!document.hidden) {
+      renderHowManyMinutesLeftToday();
+    }
+  }, false );
+
 })()
 }

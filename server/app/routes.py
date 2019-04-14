@@ -21,7 +21,7 @@ def home():
     return render_template_string("""
         {% extends "flask_user_layout.html" %}
         {% block content %}
-            {% include "home.html" %}
+            {% include "home/home.html" %}
         {% endblock %}
         """, **{'skills': skills, \
                 'default_time': current_user.default_time \
